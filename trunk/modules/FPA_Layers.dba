@@ -1,0 +1,570 @@
+Rem ***** Included Source File *****
+//////////////////
+// ************** Included Source File ***************                             
+// FULLPLATE ADVENTURES LAYERS MODULE
+// 
+// Author: miso
+//
+//////////////////////////////////////////////////////
+
+`----- Changelog:
+`(2010/07/11) - miso     - Created
+`----- USES: 
+
+`=========Constants=========`
+//---must be the same as FPA_Event_select constants in module FPA_BGUI
+#constant layer_static              = 21
+#constant layer_background          = 22
+#constant layer_playground          = 23
+#constant layer_playground2         = 24
+#constant layer_vectors             = 25
+#constant layer_foreground          = 26
+
+#constant background_parallax_speed = 0.9
+#constant foreground_parallax_speed = 1.1
+`===========================`
+
+`==========Globals==========`
+Global FPA_CurrentLayer  as Integer
+Global FPA_Layerscreated as Boolean
+Global FPA_staticspritenumbers as Integer :`how many sprites are in static layers
+Global FPA_backgroundspritenumbers as Integer :`how many sprites are in static layers
+Global FPA_playgroundspritenumbers as Integer :`how many sprites are in static layers
+Global FPA_playground2spritenumbers as Integer:``how many sprites are in static layers
+Global FPA_foregroundspritenumbers as Integer :`how many sprites are in static layers
+Global FPA_hiddenstatic as boolean
+Global FPA_hiddenback as boolean
+Global FPA_hiddenplay as boolean
+Global FPA_hiddenplay2 as boolean
+Global FPA_hiddenfore as boolean
+Global FPA_hiddennodes as boolean
+
+
+
+
+Global selectedsprite as integer
+`===========================`
+
+`===========Types===========`
+//---this holds data for layer sprites that has to be displayed
+Type Mylayertype
+	ID     as integer
+	X      as Integer
+	Y      as Integer
+	width  as integer
+	Height as integer
+	middlewidth as integer
+	middleheight as integer
+	Angle  as Integer  :`disabled atm
+Endtype
+`===========================`
+
+
+`=========Functions=========`
+//---setup layer arrays
+Function FPA_SetupLayers()
+	//Setup layer arrays, if not yet
+	If FPA_Layerscreated = 0	
+		dim FPA_Staticlayer(0) as mylayertype
+		dim FPA_Backgroundlayer(0) as mylayertype
+		dim FPA_PlayGroundlayer(0) as mylayertype
+		dim FPA_PlayGroundlayer2(0) as mylayertype
+		dim FPA_ForeGroundlayer(0) as mylayertype
+		FPA_Layerscreated = 1	
+	Endif
+Endfunction
+
+//---Add a sprite to layer
+Function FPA_AddspriteToLayer(param_layer,param_id,param_x,param_y)
+	If FPA_LayersCreated = 1
+		//--staticlayer
+		If param_layer=layer_static
+			FPA_staticspritenumbers = FPA_staticspritenumbers+1
+			array insert at bottom FPA_Staticlayer()
+			FPA_Staticlayer(FPA_staticspritenumbers).ID = param_ID
+			FPA_Staticlayer(FPA_staticspritenumbers).X = param_x-FPA_SpriteImage(param_ID).Halfwidth
+			FPA_Staticlayer(FPA_staticspritenumbers).Y = param_y-FPA_SpriteImage(param_ID).Halfheight
+			FPA_Staticlayer(FPA_staticspritenumbers).width = FPA_SpriteImage(param_ID).width
+			FPA_Staticlayer(FPA_staticspritenumbers).height = FPA_SpriteImage(param_ID).height
+			FPA_Staticlayer(FPA_staticspritenumbers).middlewidth = FPA_SpriteImage(param_ID).halfwidth
+			FPA_Staticlayer(FPA_staticspritenumbers).middleheight = FPA_SpriteImage(param_ID).halfheight
+
+		Endif
+		
+		//--playground layer
+		If param_layer=layer_playground
+			FPA_playgroundspritenumbers = FPA_playgroundspritenumbers+1
+			array insert at bottom FPA_playgroundlayer()
+			FPA_playgroundlayer(FPA_playgroundspritenumbers).ID = param_ID
+			FPA_playgroundlayer(FPA_playgroundspritenumbers).X = param_x-FPA_SpriteImage(param_ID).Halfwidth
+			FPA_playgroundlayer(FPA_playgroundspritenumbers).Y = param_y-FPA_SpriteImage(param_ID).Halfheight
+			FPA_playgroundlayer(FPA_playgroundspritenumbers).width = FPA_SpriteImage(param_ID).width
+			FPA_playgroundlayer(FPA_playgroundspritenumbers).height = FPA_SpriteImage(param_ID).height
+			FPA_playgroundlayer(FPA_playgroundspritenumbers).middlewidth = FPA_SpriteImage(param_ID).halfwidth
+			FPA_playgroundlayer(FPA_playgroundspritenumbers).middleheight = FPA_SpriteImage(param_ID).halfheight
+		Endif
+		
+		//--playground layer
+		If param_layer=layer_playground2
+			FPA_playground2spritenumbers = FPA_playground2spritenumbers+1
+			array insert at bottom FPA_playgroundlayer2()
+			FPA_playgroundlayer2(FPA_playground2spritenumbers).ID = param_ID
+			FPA_playgroundlayer2(FPA_playground2spritenumbers).X = param_x-FPA_SpriteImage(param_ID).Halfwidth-FPA_SpriteImage(param_ID).Halfwidth
+			FPA_playgroundlayer2(FPA_playground2spritenumbers).Y = param_y-FPA_SpriteImage(param_ID).Halfheight-FPA_SpriteImage(param_ID).Halfheight
+			FPA_playgroundlayer2(FPA_playground2spritenumbers).width = FPA_SpriteImage(param_ID).width
+			FPA_playgroundlayer2(FPA_playground2spritenumbers).height = FPA_SpriteImage(param_ID).height
+			FPA_playgroundlayer2(FPA_playground2spritenumbers).middlewidth = FPA_SpriteImage(param_ID).halfwidth
+			FPA_playgroundlayer2(FPA_playground2spritenumbers).middleheight = FPA_SpriteImage(param_ID).halfheight
+		Endif
+
+		//--background parallax layer
+		If param_layer=layer_background
+			FPA_backgroundspritenumbers = FPA_backgroundspritenumbers+1
+			array insert at bottom FPA_backgroundlayer()
+			FPA_backgroundlayer(FPA_backgroundspritenumbers).ID = param_ID
+			FPA_backgroundlayer(FPA_backgroundspritenumbers).X = param_x-FPA_SpriteImage(param_ID).Halfwidth
+			FPA_backgroundlayer(FPA_backgroundspritenumbers).Y = param_y-FPA_SpriteImage(param_ID).Halfheight
+			FPA_backgroundlayer(FPA_backgroundspritenumbers).width = FPA_SpriteImage(param_ID).width
+			FPA_backgroundlayer(FPA_backgroundspritenumbers).height = FPA_SpriteImage(param_ID).height
+			FPA_backgroundlayer(FPA_backgroundspritenumbers).middlewidth = FPA_SpriteImage(param_ID).halfwidth
+			FPA_backgroundlayer(FPA_backgroundspritenumbers).middleheight = FPA_SpriteImage(param_ID).halfheight
+		Endif
+
+		//--foreground parallax layer
+		If param_layer=layer_foreground
+			FPA_foregroundspritenumbers = FPA_foregroundspritenumbers+1
+			array insert at bottom FPA_foregroundlayer()
+			FPA_foregroundlayer(FPA_foregroundspritenumbers).ID = param_ID
+			FPA_foregroundlayer(FPA_foregroundspritenumbers).X = param_x-FPA_SpriteImage(param_ID).Halfwidth
+			FPA_foregroundlayer(FPA_foregroundspritenumbers).Y = param_y-FPA_SpriteImage(param_ID).Halfheight
+			FPA_foregroundlayer(FPA_foregroundspritenumbers).width = FPA_SpriteImage(param_ID).width
+			FPA_foregroundlayer(FPA_foregroundspritenumbers).height = FPA_SpriteImage(param_ID).height
+			FPA_foregroundlayer(FPA_foregroundspritenumbers).middlewidth = FPA_SpriteImage(param_ID).halfwidth
+			FPA_foregroundlayer(FPA_foregroundspritenumbers).middleheight = FPA_SpriteImage(param_ID).halfheight
+		Endif
+
+
+		
+	Endif
+
+
+Endfunction
+
+Function FPA_selectspritefromplaygroundlayer()
+If FPA_Event_Leftmouseclick=1 and FPA_Event_leftmousereleased=1
+selectedsprite=0
+FPA_selectedvector=0
+FPA_Event_leftmousereleased=0
+	for LDA=1 to FPA_playgroundspritenumbers
+		If mousex()>FPA_playgroundlayer(LDA).X+FPA_worldoffsetx and mousex()<FPA_playgroundlayer(LDA).X+FPA_worldoffsetx+FPA_playgroundlayer(LDA).width
+			If mousey()>FPA_playgroundlayer(LDA).Y+FPA_worldoffsetY and mouseY()<FPA_playgroundlayer(LDA).Y+FPA_worldoffsetY+FPA_playgroundlayer(LDA).height
+			  SelectedSprite=LDA
+			Endif
+		Endif
+	Next LDA
+Endif
+Endfunction
+
+Function FPA_selectspritefromactuallayer()
+If FPA_Event_Leftmouseclick=1 and FPA_Event_leftmousereleased=1
+	selectedsprite=0
+	FPA_Event_leftmousereleased=0
+	//--static
+	if fpa_currentlayer=layer_static
+		If FPA_hiddenstatic=0
+			for LDA=1 to FPA_staticspritenumbers
+				If mousex()>FPA_staticlayer(LDA).X and mousex()<FPA_staticlayer(LDA).X+FPA_staticlayer(LDA).width
+					If mousey()>FPA_staticlayer(LDA).Y and mouseY()<FPA_staticlayer(LDA).Y+FPA_staticlayer(LDA).height
+					  SelectedSprite=LDA
+					Endif
+				Endif
+			Next LDA
+		Endif
+	Endif
+
+
+	//--background parallax
+	if fpa_currentlayer=layer_background
+		If FPA_hiddenback=0
+			for LDA=1 to FPA_backgroundspritenumbers
+				If mousex()>FPA_backgroundlayer(LDA).X+floor(FPA_worldoffsetx*background_parallax_speed) and mousex()<FPA_backgroundlayer(LDA).X+floor(FPA_worldoffsetx*background_parallax_speed)+FPA_backgroundlayer(LDA).width
+					If mousey()>FPA_backgroundlayer(LDA).Y+floor(FPA_worldoffsetY*background_parallax_speed) and mouseY()<FPA_backgroundlayer(LDA).Y+floor(FPA_worldoffsetY*background_parallax_speed)+FPA_backgroundlayer(LDA).height
+					  SelectedSprite=LDA
+					Endif
+				Endif
+			Next LDA
+		Endif
+	Endif
+
+	
+	
+	//--playground
+	if fpa_currentlayer=layer_playground
+		If FPA_hiddenplay=0	
+			for LDA=1 to FPA_playgroundspritenumbers
+				If mousex()>FPA_playgroundlayer(LDA).X+FPA_worldoffsetx and mousex()<FPA_playgroundlayer(LDA).X+FPA_worldoffsetx+FPA_playgroundlayer(LDA).width
+					If mousey()>FPA_playgroundlayer(LDA).Y+FPA_worldoffsetY and mouseY()<FPA_playgroundlayer(LDA).Y+FPA_worldoffsetY+FPA_playgroundlayer(LDA).height
+					  SelectedSprite=LDA
+					Endif
+				Endif
+			Next LDA
+		Endif
+	Endif
+
+	//--VECTOR SPRITES
+	FPA_Selectvectorpoint()
+
+	//--playground2
+	if fpa_currentlayer=layer_playground2
+		If FPA_hiddenplay2=0
+			for LDA=1 to FPA_playground2spritenumbers
+				If mousex()>FPA_playgroundlayer2(LDA).X+FPA_worldoffsetx and mousex()<FPA_playgroundlayer2(LDA).X+FPA_worldoffsetx+FPA_playgroundlayer2(LDA).width
+					If mousey()>FPA_playgroundlayer2(LDA).Y+FPA_worldoffsetY and mouseY()<FPA_playgroundlayer2(LDA).Y+FPA_worldoffsetY+FPA_playgroundlayer2(LDA).height
+					  SelectedSprite=LDA
+					Endif
+				Endif
+			Next LDA
+		Endif
+	Endif
+
+//--foreground parallax
+	if fpa_currentlayer=layer_foreground
+		If FPA_hiddenfore=0
+			for LDA=1 to FPA_foregroundspritenumbers
+				If mousex()>FPA_foregroundlayer(LDA).X+floor(FPA_worldoffsetx*foreground_parallax_speed) and mousex()<FPA_foregroundlayer(LDA).X+floor(FPA_worldoffsetx*foreground_parallax_speed)+FPA_foregroundlayer(LDA).width
+					If mousey()>FPA_foregroundlayer(LDA).Y+floor(FPA_worldoffsetY*foreground_parallax_speed) and mouseY()<FPA_foregroundlayer(LDA).Y+floor(FPA_worldoffsetY*foreground_parallax_speed)+FPA_foregroundlayer(LDA).height
+					  SelectedSprite=LDA
+					Endif
+				Endif
+			Next LDA
+		Endif
+	Endif
+
+
+
+
+Endif
+Endfunction
+
+
+
+Function FPA_DRAWSTATICLAYER()
+	If FPA_layerscreated = 1
+		If fpa_hiddenstatic=0
+			If FPA_staticspritenumbers>0
+				For LDA=1 to FPA_staticspritenumbers
+					DXS BEGIN SPRITE RENDER FPA_SpriteImage(FPA_Staticlayer(LDA).ID).id
+						DXS DRAW SPRITE FPA_SpriteImage(FPA_Staticlayer(LDA).ID).id,FPA_Staticlayer(LDA).X,FPA_Staticlayer(LDA).Y
+					DXS END SPRITE RENDER FPA_SpriteImage(FPA_Staticlayer(LDA).ID).id
+				Next LDA
+			Endif
+		Endif
+	Endif
+Endfunction
+
+Function FPA_DRAWPLAYGROUNDLAYER()
+	If FPA_layerscreated = 1
+		If FPA_hiddenplay=0
+			If FPA_Playgroundspritenumbers>0
+				For LDA=1 to FPA_playgroundspritenumbers
+					DXS BEGIN SPRITE RENDER FPA_SpriteImage(FPA_playgroundlayer(LDA).ID).id
+						DXS DRAW SPRITE FPA_SpriteImage(FPA_playgroundlayer(LDA).ID).id,FPA_playgroundlayer(LDA).X+FPA_WorldOffsetx,FPA_playgroundlayer(LDA).Y+FPA_Worldoffsety
+					DXS END SPRITE RENDER FPA_SpriteImage(FPA_playgroundlayer(LDA).ID).id
+				Next LDA
+			Endif
+		Endif
+	Endif
+Endfunction
+
+Function FPA_DRAWPLAYGROUNDLAYER2()
+	If FPA_layerscreated = 1
+		If FPA_hiddenplay2=0
+			If FPA_Playground2spritenumbers>0
+				For LDA=1 to FPA_playground2spritenumbers
+					DXS BEGIN SPRITE RENDER FPA_SpriteImage(FPA_playgroundlayer2(LDA).ID).id
+						DXS DRAW SPRITE FPA_SpriteImage(FPA_playgroundlayer2(LDA).ID).id,FPA_playgroundlayer2(LDA).X+FPA_WorldOffsetx,FPA_playgroundlayer2(LDA).Y+FPA_Worldoffsety
+					DXS END SPRITE RENDER FPA_SpriteImage(FPA_playgroundlayer2(LDA).ID).id
+				Next LDA
+			Endif
+		Endif
+	Endif
+Endfunction
+
+
+Function FPA_DRAWbackGROUNDLAYER()
+	If FPA_layerscreated = 1
+		If FPA_Hiddenback=0
+			If FPA_backgroundspritenumbers>0
+				For LDA=1 to FPA_backgroundspritenumbers
+					DXS BEGIN SPRITE RENDER FPA_SpriteImage(FPA_backgroundlayer(LDA).ID).id
+						DXS DRAW SPRITE FPA_SpriteImage(FPA_backgroundlayer(LDA).ID).id,FPA_backgroundlayer(LDA).X+floor(FPA_WorldOffsetx*background_parallax_speed),FPA_backgroundlayer(LDA).Y+floor(FPA_Worldoffsety*background_parallax_speed)
+					DXS END SPRITE RENDER FPA_SpriteImage(FPA_backgroundlayer(LDA).ID).id
+				Next LDA
+			Endif
+		Endif
+	Endif
+Endfunction
+
+Function FPA_DRAWforeGROUNDLAYER()
+	If FPA_layerscreated = 1
+		If FPA_hiddenfore=0
+			If FPA_foregroundspritenumbers>0
+				For LDA=1 to FPA_foregroundspritenumbers
+					DXS BEGIN SPRITE RENDER FPA_SpriteImage(FPA_foregroundlayer(LDA).ID).id
+						DXS DRAW SPRITE FPA_SpriteImage(FPA_foregroundlayer(LDA).ID).id,FPA_foregroundlayer(LDA).X+floor(FPA_WorldOffsetx*foreground_parallax_speed),FPA_foregroundlayer(LDA).Y+floor(FPA_Worldoffsety*foreground_parallax_speed)
+					DXS END SPRITE RENDER FPA_SpriteImage(FPA_foregroundlayer(LDA).ID).id
+				Next LDA
+			Endif
+		Endif
+	Endif
+Endfunction
+
+
+//---reset all layer data (mostly before loading a new level)
+Function FPA_RESETALLLAYERS()
+	If FPA_Layerscreated = 1	
+		//--Destroy all layer array
+		undim FPA_Staticlayer()
+		undim FPA_Backgroundlayer()
+		undim FPA_Playgroundlayer()
+		undim FPA_Playgroundlayer2()
+		undim FPA_Foregroundlayer()
+		//--Recreates all layer array
+		dim FPA_Staticlayer(0) as mylayertype
+		dim FPA_Backgroundlayer(0) as mylayertype
+		dim FPA_PlayGroundlayer(0) as mylayertype
+		dim FPA_PlayGroundlayer2(0) as mylayertype
+		dim FPA_ForeGroundlayer(0) as mylayertype
+		//--zero to all spritenumbers
+		FPA_staticspritenumbers     = 0
+		FPA_backgroundspritenumbers = 0
+		FPA_playgroundspritenumbers = 0
+		FPA_playground2spritenumbers = 0
+		FPA_foregroundspritenumbers = 0
+	Else
+		// if layers wasnot created yet, then create
+		FPA_Setuplayers()
+	Endif
+Endfunction
+
+Function FPA_Savelayers()
+local var_fileid as integer
+local LDA as integer
+
+		var_fileid=grabresource(res_file)
+	    		//--save background layer
+	    		if file exist("Data\levels\"+fpa_actuallevel$+"\layer0.dat")=1 then delete file "Data\levels\"+fpa_actuallevel$+"\layer0.dat"
+	    		Open to write var_fileid,"Data\levels\"+fpa_actuallevel$+"\layer0.dat"
+	    			If FPA_layerscreated = 1
+						If FPA_staticspritenumbers>0
+							For LDA=1 to FPA_staticspritenumbers
+								Write long var_fileid,FPA_Staticlayer(LDA).ID
+								Write long var_fileid,FPA_Staticlayer(LDA).X
+								Write long var_fileid,FPA_Staticlayer(LDA).y
+							Next LDA
+						Endif
+					Endif
+	    		Close File var_fileid
+	    	
+	    	
+	    		//--save background parallax layer
+	    		if file exist("Data\levels\"+fpa_actuallevel$+"\layer1.dat")=1 then delete file "Data\levels\"+fpa_actuallevel$+"\layer1.dat"
+	    		Open to write var_fileid,"Data\levels\"+fpa_actuallevel$+"\layer1.dat"
+	    			If FPA_layerscreated = 1
+						If FPA_backgroundspritenumbers>0
+							For LDA=1 to FPA_backgroundspritenumbers
+								Write long var_fileid,FPA_backgroundlayer(LDA).ID
+								Write long var_fileid,FPA_backgroundlayer(LDA).X
+								Write long var_fileid,FPA_backgroundlayer(LDA).y
+							Next LDA
+						Endif
+					Endif
+	    		Close File var_fileid
+	    	
+	    	
+	    	//--save playground layer		
+	   		if file exist("Data\levels\"+fpa_actuallevel$+"\layer2.dat")=1 then delete file "Data\levels\"+fpa_actuallevel$+"\layer2.dat"
+	    		Open to write var_fileid,"Data\levels\"+fpa_actuallevel$+"\layer2.dat"
+	    			If FPA_layerscreated = 1
+						If FPA_playgroundspritenumbers>0
+							For LDA=1 to FPA_playgroundspritenumbers
+								Write long var_fileid,FPA_playgroundlayer(LDA).ID
+								Write long var_fileid,FPA_playgroundlayer(LDA).X
+								Write long var_fileid,FPA_playgroundlayer(LDA).y
+							Next LDA
+						Endif
+					Endif
+	    		Close File var_fileid
+
+			//--save playground2 layer
+				
+	   		if file exist("Data\levels\"+fpa_actuallevel$+"\layer3.dat")=1 then delete file "Data\levels\"+fpa_actuallevel$+"\layer3.dat"
+	    		Open to write var_fileid,"Data\levels\"+fpa_actuallevel$+"\layer3.dat"
+	    			If FPA_layerscreated = 1
+						If FPA_playground2spritenumbers>0
+							For LDA=1 to FPA_playground2spritenumbers
+								Write long var_fileid,FPA_playgroundlayer2(LDA).ID
+								Write long var_fileid,FPA_playgroundlayer2(LDA).X
+								Write long var_fileid,FPA_playgroundlayer2(LDA).y
+							Next LDA
+						Endif
+					Endif
+	    		Close File var_fileid
+
+
+
+				//--save foreground parallax layer
+	    		if file exist("Data\levels\"+fpa_actuallevel$+"\layer4.dat")=1 then delete file "Data\levels\"+fpa_actuallevel$+"\layer4.dat"
+	    		Open to write var_fileid,"Data\levels\"+fpa_actuallevel$+"\layer4.dat"
+	    			If FPA_layerscreated = 1
+						If FPA_foregroundspritenumbers>0
+							For LDA=1 to FPA_foregroundspritenumbers
+								Write long var_fileid,FPA_foregroundlayer(LDA).ID
+								Write long var_fileid,FPA_foregroundlayer(LDA).X
+								Write long var_fileid,FPA_foregroundlayer(LDA).y
+							Next LDA
+						Endif
+					Endif
+	    		Close File var_fileid
+
+
+
+
+
+	       		freeresource(var_fileid,res_file)
+	       		//--save the vectors too
+	       		FPA_savevectors()
+Endfunction
+
+Function FPA_Loadlayers()
+local var_fileid as integer
+var_fileid=grabresource(res_file)
+
+fpa_resetalllayers()
+	//--load background layer
+	If file exist("Data\levels\"+fpa_actuallevel$+"\layer0.dat")=1
+	Open to read var_fileid,"Data\levels\"+fpa_actuallevel$+"\layer0.dat"
+		If FPA_layerscreated = 1
+			While File End(var_fileid)=0
+				FPA_staticspritenumbers=FPA_staticspritenumbers+1
+				array insert at bottom fpa_staticlayer()
+				Read long var_fileid,FPA_Staticlayer(FPA_staticspritenumbers).ID
+				Read long var_fileid,FPA_Staticlayer(FPA_staticspritenumbers).X
+				Read long var_fileid,FPA_Staticlayer(FPA_staticspritenumbers).y
+				If file end(var_fileid)=0
+					FPA_Staticlayer(FPA_staticspritenumbers).width = FPA_SpriteImage(FPA_Staticlayer(FPA_staticspritenumbers).ID).width
+					FPA_Staticlayer(FPA_staticspritenumbers).height = FPA_SpriteImage(FPA_Staticlayer(FPA_staticspritenumbers).ID).height
+					FPA_Staticlayer(FPA_staticspritenumbers).middlewidth = FPA_SpriteImage(FPA_Staticlayer(FPA_staticspritenumbers).ID).halfwidth
+					FPA_Staticlayer(FPA_staticspritenumbers).middleheight = FPA_SpriteImage(FPA_Staticlayer(FPA_staticspritenumbers).ID).halfheight
+				Endif
+			Endwhile
+			FPA_staticspritenumbers=FPA_staticspritenumbers-1
+		Endif
+	Close File var_fileid
+  	Endif
+  	
+  	
+   	//--load background layer		
+	If file exist("Data\levels\"+fpa_actuallevel$+"\layer1.dat")=1
+	Open to read var_fileid,"Data\levels\"+fpa_actuallevel$+"\layer1.dat"
+		If FPA_layerscreated = 1
+			While File End(var_fileid)=0
+				FPA_backgroundspritenumbers=FPA_backgroundspritenumbers+1
+				array insert at bottom fpa_backgroundlayer()
+				Read long var_fileid,FPA_backgroundlayer(FPA_backgroundspritenumbers).ID
+				Read long var_fileid,FPA_backgroundlayer(FPA_backgroundspritenumbers).X
+				Read long var_fileid,FPA_backgroundlayer(FPA_backgroundspritenumbers).y
+				
+				If file end(var_fileid)=0
+					FPA_backgroundlayer(FPA_backgroundspritenumbers).width = FPA_SpriteImage(FPA_backgroundlayer(FPA_backgroundspritenumbers).ID).width
+					FPA_backgroundlayer(FPA_backgroundspritenumbers).height = FPA_SpriteImage(FPA_backgroundlayer(FPA_backgroundspritenumbers).ID).height
+					FPA_backgroundlayer(FPA_backgroundspritenumbers).middlewidth = FPA_SpriteImage(FPA_backgroundlayer(FPA_backgroundspritenumbers).ID).halfwidth
+					FPA_backgroundlayer(FPA_backgroundspritenumbers).middleheight = FPA_SpriteImage(FPA_backgroundlayer(FPA_backgroundspritenumbers).ID).halfheight
+				Endif
+				
+			Endwhile
+			FPA_backgroundspritenumbers=FPA_backgroundspritenumbers-1
+		Endif
+	Close File var_fileid
+	//--finally save the vectors too
+	
+  	Endif
+  
+   	
+   	//--load playground layer		
+	If file exist("Data\levels\"+fpa_actuallevel$+"\layer2.dat")=1
+	Open to read var_fileid,"Data\levels\"+fpa_actuallevel$+"\layer2.dat"
+		If FPA_layerscreated = 1
+			While File End(var_fileid)=0
+				FPA_playgroundspritenumbers=FPA_playgroundspritenumbers+1
+				array insert at bottom fpa_playgroundlayer()
+				Read long var_fileid,FPA_playgroundlayer(FPA_playgroundspritenumbers).ID
+				Read long var_fileid,FPA_playgroundlayer(FPA_playgroundspritenumbers).X
+				Read long var_fileid,FPA_playgroundlayer(FPA_playgroundspritenumbers).y
+				
+				If file end(var_fileid)=0
+					FPA_playgroundlayer(FPA_playgroundspritenumbers).width = FPA_SpriteImage(FPA_playgroundlayer(FPA_playgroundspritenumbers).ID).width
+					FPA_playgroundlayer(FPA_playgroundspritenumbers).height = FPA_SpriteImage(FPA_playgroundlayer(FPA_playgroundspritenumbers).ID).height
+					FPA_playgroundlayer(FPA_playgroundspritenumbers).middlewidth = FPA_SpriteImage(FPA_playgroundlayer(FPA_playgroundspritenumbers).ID).halfwidth
+					FPA_playgroundlayer(FPA_playgroundspritenumbers).middleheight = FPA_SpriteImage(FPA_playgroundlayer(FPA_playgroundspritenumbers).ID).halfheight
+				Endif
+				
+			Endwhile
+			FPA_playgroundspritenumbers=FPA_playgroundspritenumbers-1
+		Endif
+	Close File var_fileid
+	Endif
+	
+	 	//--load playground2 layer		
+	If file exist("Data\levels\"+fpa_actuallevel$+"\layer3.dat")=1
+	Open to read var_fileid,"Data\levels\"+fpa_actuallevel$+"\layer3.dat"
+		If FPA_layerscreated = 1
+			While File End(var_fileid)=0
+				FPA_playground2spritenumbers=FPA_playground2spritenumbers+1
+				array insert at bottom fpa_playgroundlayer2()
+				Read long var_fileid,FPA_playgroundlayer2(FPA_playground2spritenumbers).ID
+				Read long var_fileid,FPA_playgroundlayer2(FPA_playground2spritenumbers).X
+				Read long var_fileid,FPA_playgroundlayer2(FPA_playground2spritenumbers).y
+				
+				If file end(var_fileid)=0
+					FPA_playgroundlayer2(FPA_playground2spritenumbers).width = FPA_SpriteImage(FPA_playgroundlayer2(FPA_playground2spritenumbers).ID).width
+					FPA_playgroundlayer2(FPA_playground2spritenumbers).height = FPA_SpriteImage(FPA_playgroundlayer2(FPA_playground2spritenumbers).ID).height
+					FPA_playgroundlayer2(FPA_playground2spritenumbers).middlewidth = FPA_SpriteImage(FPA_playgroundlayer2(FPA_playground2spritenumbers).ID).halfwidth
+					FPA_playgroundlayer2(FPA_playground2spritenumbers).middleheight = FPA_SpriteImage(FPA_playgroundlayer2(FPA_playground2spritenumbers).ID).halfheight
+				Endif
+				
+			Endwhile
+			FPA_playground2spritenumbers=FPA_playground2spritenumbers-1
+		Endif
+	Close File var_fileid
+	Endif
+	
+	 	//--load foreground layer		
+	If file exist("Data\levels\"+fpa_actuallevel$+"\layer4.dat")=1
+	Open to read var_fileid,"Data\levels\"+fpa_actuallevel$+"\layer4.dat"
+		If FPA_layerscreated = 1
+			While File End(var_fileid)=0
+				FPA_foregroundspritenumbers=FPA_foregroundspritenumbers+1
+				array insert at bottom fpa_foregroundlayer()
+				Read long var_fileid,FPA_foregroundlayer(FPA_foregroundspritenumbers).ID
+				Read long var_fileid,FPA_foregroundlayer(FPA_foregroundspritenumbers).X
+				Read long var_fileid,FPA_foregroundlayer(FPA_foregroundspritenumbers).y
+				
+				If file end(var_fileid)=0
+					FPA_foregroundlayer(FPA_foregroundspritenumbers).width = FPA_SpriteImage(FPA_foregroundlayer(FPA_foregroundspritenumbers).ID).width
+					FPA_foregroundlayer(FPA_foregroundspritenumbers).height = FPA_SpriteImage(FPA_foregroundlayer(FPA_foregroundspritenumbers).ID).height
+					FPA_foregroundlayer(FPA_foregroundspritenumbers).middlewidth = FPA_SpriteImage(FPA_foregroundlayer(FPA_foregroundspritenumbers).ID).halfwidth
+					FPA_foregroundlayer(FPA_foregroundspritenumbers).middleheight = FPA_SpriteImage(FPA_foregroundlayer(FPA_foregroundspritenumbers).ID).halfheight
+				Endif
+				
+			Endwhile
+			FPA_foregroundspritenumbers=FPA_foregroundspritenumbers-1
+		Endif
+	Close File var_fileid
+	Endif
+	
+	
+freeresource(var_fileid,res_file)
+//--finally load the vector objects
+FPA_Loadvectors()
+Endfunction

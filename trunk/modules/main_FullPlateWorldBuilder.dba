@@ -1,0 +1,74 @@
+
+/////////////////////////////////////////////////////
+// ********* Included Source File *********
+// FullPlate Adventures, world builder tool           
+//
+// Created by miso    
+//
+/////////////////////////////////////////////////////
+`----- Changelog:
+`(2010/07/11) - miso     - Created
+`USES Advanced Sprites,Box2D, Ian's matrix1, BlueGui,TitanEngine.
+
+`=========Constants=========`
+`===========================`
+
+`==========Globals==========`
+`===========================`
+
+`===========Types===========`
+`===========================`
+
+`=========MAIN=========`
+
+FPA_StartWorldBuilder()
+//--for mouseclickstart
+FPA_EVENT_leftmousereleased=1
+
+Do
+FPA_Setinternalmousevariables()
+
+	SyS_Handlegadgets()
+	FPA_RunWorldBuilder()
+
+SyS_Text(1,0,0,"sprites loaded="+str$(FPA_LoadedSpriteImages))
+SyS_Text(1,0,15,"sprites drawed="+str$(FPA_staticspritenumbers+FPA_Backgroundspritenumbers+FPA_playgroundspritenumbers+FPA_Foregroundspritenumbers))
+SyS_Text(1,0,30,"OFFSET_X="+str$(FPA_worldoffsetx))
+SyS_Text(1,0,45,"OFFSET_Y="+str$(FPA_worldoffsety))
+
+
+				
+	SyS_Handlemouse()
+	
+
+
+//--testing d3d draw
+if returnkey()=1
+d3d_line 10,10,300,300
+Endif
+
+SyS_Synchandle()
+// testing add sprite
+if spacekey()=1
+	if fpa_currentlayer=layer_static
+		FPA_AddspriteToLayer(FPA_currentlayer,9,mousex(),mousey())
+	Endif
+	if fpa_currentlayer=layer_playground or fpa_currentlayer=layer_playground2
+		FPA_AddspriteToLayer(FPA_currentlayer,9,(-1*FPA_worldoffsetx+mousex()),(-1*FPA_worldoffsety)+mousey())
+	Endif
+	
+	if fpa_currentlayer=layer_background
+		FPA_AddspriteToLayer(FPA_currentlayer,9,(floor(-1*FPA_worldoffsetx*background_parallax_speed)+mousex()),(floor(-1*FPA_worldoffsety*background_parallax_speed))+mousey())
+	Endif
+	
+	if fpa_currentlayer=layer_foreground
+		FPA_AddspriteToLayer(FPA_currentlayer,9,(floor(-1*FPA_worldoffsetx*foreground_parallax_speed)+mousex()),(floor(-1*FPA_worldoffsety*foreground_parallax_speed))+mousey())
+	Endif
+	
+	
+	Repeat
+	sync
+	Until spacekey()=0
+Endif
+
+Loop

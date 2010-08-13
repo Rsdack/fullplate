@@ -1,0 +1,90 @@
+Rem ***** Included Source File *****
+////////////////////
+// ************** Included Source File ***************                             
+// FULLPLATE ADVENTURES SPRITE IMAGES MODULE
+// 
+// Author: miso
+//
+//////////////////////////////////////////////////////
+
+`----- Changelog:
+`(2010/07/11) - miso     - Created
+
+`=========Constants=========`
+`===========================`
+
+`==========Globals==========`
+Global FPA_LoadedSpriteImages      as Integer
+Global FPA_SpriteImageTablecreated as Boolean
+`===========================`
+
+`===========Types===========`
+Type myspriteimagetype
+	ID         as Integer
+	Name       as String
+	SpriteID   as Integer
+	Width      as Integer
+	Height     as Integer
+	HalfWidth  as Integer
+	HalfHeight as Integer
+Endtype
+`===========================`
+
+
+`=========Functions=========`
+//---Creates an array for image data
+Function FPA_CreateSpriteImagetable()
+	Dim FPA_Spriteimage(0) as myspriteimagetype
+	FPA_SpriteImageTablecreated=1
+Endfunction
+
+
+//---Deletes the sprite image data
+Function FPA_DestroySpriteImagetable()
+local LDA as integer
+	//--Basic debug checks
+	FPA_CheckSpriteTable()
+	//--detroy sprite images
+	If FPA_SpriteImageTablecreated>0
+		For LDA=1 to FPA_SpriteImageTablecreated
+			DXS DELETE SPRITE FPA_SpriteImage(LDA).ID
+		Next LDA
+	Endif
+	//--Destroy the image array	
+	Undim FPA_Spriteimage()
+	FPA_SpriteImageTablecreated=0
+Endfunction
+
+Function FPA_ClearSpriteImagetable()
+local LDA as integer
+	//--Basic debug checks
+	FPA_CheckSpriteTable()
+	//--detroy sprite images
+	If FPA_Loadedspriteimages>0
+		For LDA=1 to FPA_Loadedspriteimages
+			DXS DELETE SPRITE FPA_SpriteImage(LDA).ID
+		Next LDA
+	Endif
+	FPA_Loadedspriteimages=0
+Endfunction
+
+
+
+
+//---Loads a sprite image (static)
+Function FPA_LoadSpriteImage(param_ImageFile$,param_name$)
+	//--basic debug checks
+	FPA_CheckDxSprites()
+	FPA_CheckSpriteTable()
+	FPA_Checkfile(param_ImageFile$)
+	//--add new element to image array
+	Array Insert At Bottom FPA_Spriteimage()
+	//--setup basic variables
+	FPA_LoadedSpriteImages=FPA_LoadedSpriteImages+1
+	FPA_SpriteImage(FPA_LoadedSpriteImages).ID=DXS CREATE SPRITE(param_ImageFile$)
+	FPA_SpriteImage(FPA_LoadedSpriteImages).Name=param_name$
+	FPA_SpriteImage(FPA_LoadedSpriteImages).width=DXS GET SPRITE WIDTH(FPA_SpriteImage(FPA_LoadedSpriteImages).ID)
+	FPA_SpriteImage(FPA_LoadedSpriteImages).height=DXS GET SPRITE HEIGHT(FPA_SpriteImage(FPA_LoadedSpriteImages).ID)
+	FPA_SpriteImage(FPA_LoadedSpriteImages).halfwidth=DXS GET SPRITE WIDTH(FPA_SpriteImage(FPA_LoadedSpriteImages).ID)/2
+	FPA_SpriteImage(FPA_LoadedSpriteImages).halfheight=DXS GET SPRITE HEIGHT(FPA_SpriteImage(FPA_LoadedSpriteImages).ID)/2
+Endfunction

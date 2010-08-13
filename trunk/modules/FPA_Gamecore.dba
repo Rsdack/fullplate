@@ -1,0 +1,99 @@
+Rem ***** Included Source File *****
+
+
+
+Rem ***** Included Source File *****
+
+//////////////////
+// ************** Included Source File **************                             
+// FULLPLATE ADVENTURES GAME CORE MODULE
+// 
+// Author: miso
+//
+//////////////////////////////////////////////////////
+
+`----- Changelog:
+`(2010/07/11) - miso     - Created
+
+`----- USES: TE
+
+`=========Constants=========`
+`===========================`
+
+`==========Globals==========`
+`===========================`
+
+`===========Types===========`
+`===========================`
+
+
+`=========Functions=========`
+
+Function FPA_StartGAME()
+	//--init titan engine modules
+	SyS_Initcore()
+	SyS_InitResource()
+	//--sets the display mode
+	SyS_Initwindow(640,480,32,1,1,0,1,1)
+	//--loads the mouse
+	SyS_Initmouse("data\cursors\cursor2.dds")
+	//--loads the fonts
+	SyS_Initfonts()
+		SyS_Loadfont(1,"Data\fonts\smallfont.dat",8)
+		SyS_Loadfont(2,"Data\fonts\smallgoldfont.dat",8)
+	//--setup user interface and loads gadgets
+	SyS_InitGuiGraphics()
+	//--Setup the spriteimage tablet
+	FPA_CreateSpriteImagetable()
+	FPA_Setuplayers()
+	FPA_Setupvectorworld()
+	//---Start BlueGui
+        StartBlue "XXX","XXXXXX"
+	//---Init D3D
+	d3d_init
+	//---Init Box2D
+	b2SetScale 100, 180.0/3.1415926535, 1, 10000
+	b2SetScreenTransform 0, 0, 1, 0
+	world = b2CreateWorld(0, 2000, 1)
+	//--Hides the Titan mouse, shows builtin mouse	
+	SyS_Hidemouse():show mouse
+	//--Creates the main Bluegui window layout
+	rem FPA_Createmainwindow()
+	
+	//--TESTONLY
+	rem FPA_CreateTestvectors()
+	
+Endfunction
+
+
+
+Function FPA_RunGAME()
+	// draw layers
+	FPA_DRAWSTATICLAYER()
+	FPA_Drawbackgroundlayer()
+	FPA_DRAWPLAYGROUNDLAYER()
+	b2drawworld world,0
+	rem here will be between these two tha player and phy objects
+	FPA_DRAWPLAYGROUNDLAYER2()
+	FPA_DRAWforegroundlayer()
+	FPA_Drawvectors()
+	//--writes some info on screen
+	IF FPA_actuallevel$=""
+	Else
+		SyS_CenterText(2,320,0,"level "+FPA_actuallevel$)
+		SyS_CenterText(2,320,30,"Vectors+150 dynamic box test ")
+		SyS_CenterText(1,320,60,"Fps:"+str$(screen fps()))
+	Endif
+
+	//--checks some meu events
+
+	FPA_Getevent()
+
+	rem If fpa_event_rightmouseclick=1
+	If fpa_event_altkeypressed=1
+		Fpa_worldoffsetx=Fpa_worldoffsetx+fpa_mousemovex
+		Fpa_worldoffsety=Fpa_worldoffsety+fpa_mousemovey
+	Endif
+Endfunction	
+
+

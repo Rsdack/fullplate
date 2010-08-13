@@ -1,0 +1,70 @@
+Rem ***** Included Source File *****
+Remstart
+/////////////////////////////////////////////////////
+//
+// FullPlate Adventures, sub module           
+//
+// Created by miso    
+//
+/////////////////////////////////////////////////////
+`----- Changelog:
+`(2010/07/11) - miso     - Created
+
+`----- To-Do:
+
+`----- Purpose:
+Initialzes world, layers etc etc
+`----- Dependancies and Conflicts (IMPORTANT STUFF):
+
+`----- Conflicts
+
+`----- Other Notes:
+`Usage (IMPORTANT***):
+
+`----- Function List:
+Remend
+
+`=========Constants=========`
+#Constant SyS_False  = 1
+#Constant SyS_True   = 1
+`===========================`
+
+`==========Globals==========`
+
+`===========================`
+
+`===========Types===========`
+`===========================`
+
+
+`=========Functions=========`
+
+Function SyS_InitAll()
+//***************************************************************************************
+//*   Miso                                                                              *
+//*     This function initiate everything for start.                                    *
+//*                                                                                     *
+//***************************************************************************************
+
+//---Set Display mode
+	Sync On
+	Set window off
+	Set Display Mode 640,480,32,1:Sync rate 60
+//---Start DXSPRITES
+	DXS Initialize
+//---Start BlueGui
+	 StartBlue "XXX","XXXXXX"
+//---Init D3D
+	d3d_init
+//---Init Box2D
+	b2SetScale 100, 180.0/3.1415926535, 1, 10000
+	b2SetScreenTransform 0, 0, 1, 0
+	world = b2CreateWorld(0, 2000, 1)
+//---Reserves memory for map data
+rem Dim map(100,100) as mymaptype
+//---set backdrop
+backdrop on
+color backdrop 0
+Endfunction
+
+
