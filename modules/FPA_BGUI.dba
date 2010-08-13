@@ -1,0 +1,347 @@
+Rem ***** Included Source File *****
+
+//////////////////////////////////////////////////////
+// FPA BGUI MODULE
+// 
+// Author: miso
+//
+//////////////////////////////////////////////////////
+
+`----- Changelog:
+`(2010/07/11) - miso     - Created
+`----- To-Do:
+
+`----- Purpose:
+
+`----- USES: none
+
+`----- Function List:
+
+`=========Constants=========`
+#Constant FPA_EVENT_SAVE                   =  6
+#Constant FPA_EVENT_QUIT                   =  7
+#Constant FPA_EVENT_LOADTESTLEVEL          =  8
+#Constant FPA_EVENT_LOADLEVEL1             =  9
+#Constant FPA_EVENT_LOADLEVEL2             =  10
+#Constant FPA_EVENT_LOADLEVEL3             =  11
+#Constant FPA_EVENT_LOADLEVEL4             =  12
+#Constant FPA_EVENT_LOADLEVEL5             =  13
+#Constant FPA_EVENT_LOADLEVEL6             =  14
+#Constant FPA_EVENT_LOADLEVEL7             =  15
+#Constant FPA_EVENT_LOADLEVEL8             =  16
+#Constant FPA_EVENT_SPRITEIMAGES           =  17
+#Constant FPA_EVENT_SPRITEOBJECTS          =  18
+#Constant FPA_EVENT_VECTOROBJECTS          =  19
+#Constant FPA_EVENT_PHYSICACTORS           =  20
+#Constant FPA_EVENT_SELECTSTATICLAYER      =  21
+#Constant FPA_EVENT_SELECTBACKGROUNDLAYER  =  22
+#Constant FPA_EVENT_SELECTPLAYGROUNDLAYER  =  23
+#Constant FPA_EVENT_SELECTPLAYGROUNDLAYER2 =  24
+#Constant FPA_EVENT_SELECTVECTORLAYER      =  25
+#Constant FPA_EVENT_SELECTFOREGROUNDLAYER  =  26
+
+#Constant FPA_EVENT_HIDESTATIC             =  27
+#Constant FPA_EVENT_HIDEBACK               =  28
+#Constant FPA_EVENT_HIDEPLAY               =  29
+#Constant FPA_EVENT_HIDEPLAY2              =  30
+#Constant FPA_EVENT_HIDEFORE               =  31
+#Constant FPA_EVENT_HIDENODES              =  32
+
+
+
+
+
+#Constant FPA_EVENT_POPUPMENU              =  50
+#Constant FPA_EVENT_CHOOSEADDNEWVECTOR     =  100
+#Constant FPA_EVENT_CHOOSECONNECTVECTOR    =  101
+#Constant FPA_EVENT_CHOOSEDISCONNECTVECTOR =  102
+#Constant FPA_EVENT_CHOOSEDELETEVECTOR     =  103
+
+`===========================`
+
+`==========Globals==========`
+Global BG_MAINMENU  as integer
+Global BG_FILEMENU  as integer
+Global BG_LOADMENU  as integer
+Global BG_EDITMENU  as integer
+Global BG_LAYERMENU as integer
+Global BG_TOOLSMENU as integer
+Global BG_POPUPMENU as integer
+
+`===========================`
+
+`===========Types===========`
+`===========================`
+
+
+`=========Functions=========`
+
+Function FPA_createmainwindow()
+//--add main menu
+BG_MAINMENU=createMenu(0)
+    addMenuItem BG_MAINMENU,"File",0
+    addMenuItem BG_MAINMENU,"Edit",1
+    addMenuItem BG_MAINMENU,"Layers",2
+    addMenuItem BG_MAINMENU,"Tools",3
+    addMenuItem BG_MAINMENU,"Help",4
+
+//--add file submenuitems
+BG_fileMenu=createSubMenu(BG_mainMenu,0)
+	addMenuItem BG_FILEMENU,"Load",5
+	addMenuItem BG_FILEMENU,"Save",FPA_EVENT_SAVE
+	addMenuItem BG_FILEMENU,"Quit",FPA_EVENT_QUIT
+
+//--add load menu
+BG_LoadMenu=createSubMenu(BG_FileMenu,5)
+	addMenuItem BG_LOADMENU,"=mintalevel=",FPA_EVENT_LOADTESTLEVEL
+	addMenuItem BG_LOADMENU,"Level 1",FPA_EVENT_LOADLEVEL1
+	addMenuItem BG_LOADMENU,"Level 2",FPA_EVENT_LOADLEVEL2
+	addMenuItem BG_LOADMENU,"Level 3",FPA_EVENT_LOADLEVEL3
+	addMenuItem BG_LOADMENU,"Level 4",FPA_EVENT_LOADLEVEL4
+	addMenuItem BG_LOADMENU,"Level 5",FPA_EVENT_LOADLEVEL5
+	addMenuItem BG_LOADMENU,"Level 6",FPA_EVENT_LOADLEVEL6
+	addMenuItem BG_LOADMENU,"Level 7",FPA_EVENT_LOADLEVEL7
+	addMenuItem BG_LOADMENU,"Level 8",FPA_EVENT_LOADLEVEL8
+	
+//--Add edit menu items
+BG_EditMenu=createSubMenu(BG_MainMenu,1)
+	addMenuItem BG_EDITMENU,"Sprite Images",FPA_EVENT_SPRITEIMAGES
+	addMenuItem BG_EDITMENU,"Sprite Objects",FPA_EVENT_SPRITEOBJECTS
+	addMenuItem BG_EDITMENU,"Vector Objects",FPA_EVENT_VECTOROBJECTS
+	addMenuItem BG_EDITMENU,"Physic Actors",FPA_EVENT_PHYSICACTORS
+		
+	
+BG_LayerMenu=createSubMenu(BG_MainMenu,2)
+	addMenuItem BG_LayerMENU,"Static",FPA_EVENT_SELECTSTATICLAYER
+	addMenuItem BG_LayerMENU,"Background",FPA_EVENT_SELECTBACKGROUNDLAYER
+	addMenuItem BG_LayerMENU,"Playground",FPA_EVENT_SELECTPLAYGROUNDLAYER
+	addMenuItem BG_LayerMENU,"Playground2",FPA_EVENT_SELECTPLAYGROUNDLAYER2
+	addMenuItem BG_LayerMENU,"Vectorlayer",FPA_EVENT_SELECTVECTORLAYER
+	addMenuItem BG_LayerMENU,"Foreground",FPA_EVENT_SELECTFOREGROUNDLAYER
+	Setmenuitemradio BG_LAYERMENU,FPA_EVENT_SELECTSTATICLAYER,FPA_EVENT_SELECTFOREGROUNDLAYER,FPA_EVENT_SELECTSTATICLAYER
+	FPA_Currentlayer=FPA_EVENT_SELECTSTATICLAYER
+
+//--Add edit menu items
+BG_ToolsMenu=createSubMenu(BG_MainMenu,3)
+	addMenuItem BG_toolsMENU,"Hide static backdrop",FPA_EVENT_HIDESTATIC
+	addMenuItem BG_toolsMENU,"Hide parallax BACKground",FPA_EVENT_HIDEBACK
+	addMenuItem BG_toolsMENU,"Hide playground",FPA_EVENT_HIDEPLAY
+	addMenuItem BG_toolsMENU,"Hide playground2",FPA_EVENT_HIDEPLAY2
+	addMenuItem BG_toolsMENU,"Hide foreground",FPA_EVENT_HIDEFORE
+	addMenuItem BG_toolsMENU,"Hide vector nodes",FPA_EVENT_HIDENODES
+		
+
+
+
+//--popupsfor vectors
+BG_popupmenu=createpopupmenu()
+
+	addMenuItem BG_popupmenu,"addnewvector",FPA_EVENT_CHOOSEADDNEWVECTOR
+   	addMenuItem BG_popupmenu,"connectvector",FPA_EVENT_CHOOSECONNECTVECTOR
+	addMenuItem BG_popupmenu,"disconnectvector",FPA_EVENT_CHOOSEDISCONNECTVECTOR
+   	addMenuItem BG_popupmenu,"deletevector",FPA_EVENT_CHOOSEDELETEVECTOR
+Endfunction
+
+Function FPA_checkBguievents()
+local var_fileid as integer
+	getevent
+		If eventType()=MENU_CLICK
+			If eventData()=FPA_EVENT_QUIT then end
+			If eventData()=FPA_EVENT_LOADTESTLEVEL 
+				FPA_Loadlevel("=mintalevel=")
+				FPA_Loadlayers()
+			Endif
+	    	
+	    	//--Load level 1
+	    	If eventData()=FPA_EVENT_LOADLEVEL1
+				FPA_Loadlevel("1")
+				FPA_Loadlayers()
+			Endif
+	    	
+	    	//--Load level 2
+	    	If eventData()=FPA_EVENT_LOADLEVEL2
+				FPA_Loadlevel("2")
+				FPA_Loadlayers()
+			Endif
+	    	
+	    	//--Load level 3
+	    	If eventData()=FPA_EVENT_LOADLEVEL3
+				FPA_Loadlevel("3")
+				FPA_Loadlayers()
+			Endif
+	    	
+	    	//--Load level 4
+	    	If eventData()=FPA_EVENT_LOADLEVEL4
+				FPA_Loadlevel("4")
+				FPA_Loadlayers()
+			Endif
+	    	
+	    	//--Load level 5
+	    	If eventData()=FPA_EVENT_LOADLEVEL5
+				FPA_Loadlevel("5")
+				FPA_Loadlayers()
+			Endif
+	    	
+	    	//--Load level 6
+	    	If eventData()=FPA_EVENT_LOADLEVEL6
+				FPA_Loadlevel("6")
+				FPA_Loadlayers()
+			Endif
+	    	
+	    	//--Load level 7
+	    	If eventData()=FPA_EVENT_LOADLEVEL7
+				FPA_Loadlevel("7")
+				FPA_Loadlayers()
+			Endif
+	    	
+	    	//--Load level 8
+	    	If eventData()=FPA_EVENT_LOADLEVEL8
+				FPA_Loadlevel("8")
+				FPA_Loadlayers()
+			Endif
+	    	
+	    	
+	    	//---SAVE LAYERS
+	    	If eventData()=FPA_EVENT_SAVE
+	    		FPA_SaveLayers()
+	    	Endif 
+	    
+	    	
+	    	//addMenuItem BG_toolsMENU,"Hide static backdrop",FPA_EVENT_HIDESTATIC
+			//addMenuItem BG_toolsMENU,"Hide parallax BACKground",FPA_EVENT_HIDEBACK
+			//addMenuItem BG_toolsMENU,"Hide playground",FPA_EVENT_HIDEPLAY
+			//addMenuItem BG_toolsMENU,"Hide playground2",FPA_EVENT_HIDEPLAY2
+			//addMenuItem BG_toolsMENU,"Hide foreground",FPA_EVENT_HIDEFORE
+			//addMenuItem BG_toolsMENU,"Hide vector nodes",FPA_EVENT_HIDENODES
+	    	
+	    	
+	    	if eventdata()=FPA_EVENT_HIDENODES
+	    		If FPA_HiddenNODES=0
+	    			Setmenuitemchecked BG_TOOLSMENU,FPA_EVENT_HIDENODES,1
+	    			FPA_HiddenNODES=1
+	    		Else
+	    			Setmenuitemchecked BG_TOOLSMENU,FPA_EVENT_HIDENODES,0
+	    			FPA_HiddenNODES=0
+	    		Endif
+	    	Endif
+	    	
+	    	
+	    	if eventdata()=FPA_EVENT_HIDEFORE
+	    		If FPA_HiddenFORE=0
+	    			Setmenuitemchecked BG_TOOLSMENU,FPA_EVENT_HIDEFORE,1
+	    			FPA_HiddenFORE=1
+	    		Else
+	    			Setmenuitemchecked BG_TOOLSMENU,FPA_EVENT_HIDEFORE,0
+	    			FPA_HiddenFORE=0
+	    		Endif
+	    	Endif
+	    	
+	    	
+	    	if eventdata()=FPA_EVENT_HIDEPLAY2
+	    		If FPA_HiddenPLAY2=0
+	    			Setmenuitemchecked BG_TOOLSMENU,FPA_EVENT_HIDEPLAY2,1
+	    			FPA_HiddenPLAY2=1
+	    		Else
+	    			Setmenuitemchecked BG_TOOLSMENU,FPA_EVENT_HIDEPLAY2,0
+	    			FPA_HiddenPLAY2=0
+	    		Endif
+	    	Endif
+	    	
+	    	
+	    	
+	    	if eventdata()=FPA_EVENT_HIDEPLAY
+	    		If FPA_HiddenPLAY=0
+	    			Setmenuitemchecked BG_TOOLSMENU,FPA_EVENT_HIDEPLAY,1
+	    			FPA_HiddenPLAY=1
+	    		Else
+	    			Setmenuitemchecked BG_TOOLSMENU,FPA_EVENT_HIDEPLAY,0
+	    			FPA_HiddenPLAY=0
+	    		Endif
+	    	Endif
+	    	
+	    	
+	    	
+	    	if eventdata()=FPA_EVENT_HIDEBACK
+	    		If FPA_HiddenBACK=0
+	    			Setmenuitemchecked BG_TOOLSMENU,FPA_EVENT_HIDEBACK,1
+	    			FPA_HiddenBACK=1
+	    		Else
+	    			Setmenuitemchecked BG_TOOLSMENU,FPA_EVENT_HIDEBACK,0
+	    			FPA_HiddenBACK=0
+	    		Endif
+	    	Endif
+	    	
+	    	
+	    	if eventdata()=FPA_EVENT_HIDESTATIC
+	    		If FPA_Hiddenstatic=0
+	    			Setmenuitemchecked BG_TOOLSMENU,FPA_EVENT_HIDESTATIC,1
+	    			FPA_Hiddenstatic=1
+	    		Else
+	    			Setmenuitemchecked BG_TOOLSMENU,FPA_EVENT_HIDESTATIC,0
+	    			FPA_Hiddenstatic=0
+	    		Endif
+	    	Endif
+	    	
+	    	
+	    	
+	    	//---SELECT LAYER MENU
+	    	//--select static layer
+	    	If eventData()=FPA_EVENT_SELECTSTATICLAYER 
+	    		Setmenuitemradio BG_LAYERMENU,FPA_EVENT_SELECTSTATICLAYER,FPA_EVENT_SELECTFOREGROUNDLAYER,FPA_EVENT_SELECTSTATICLAYER
+	    		FPA_Currentlayer=FPA_EVENT_SELECTSTATICLAYER
+	    	Endif
+	    	//--select background parallax layer
+	    	If eventData()=FPA_EVENT_SELECTBACKGROUNDLAYER 
+	    		Setmenuitemradio BG_LAYERMENU,FPA_EVENT_SELECTSTATICLAYER,FPA_EVENT_SELECTFOREGROUNDLAYER,FPA_EVENT_SELECTBACKGROUNDLAYER
+	    		FPA_Currentlayer=FPA_EVENT_SELECTBACKGROUNDLAYER
+	    	Endif
+	    	//--select playground layer
+	    	If eventData()=FPA_EVENT_SELECTPLAYGROUNDLAYER 
+	    		Setmenuitemradio BG_LAYERMENU,FPA_EVENT_SELECTSTATICLAYER,FPA_EVENT_SELECTFOREGROUNDLAYER,FPA_EVENT_SELECTPLAYGROUNDLAYER
+	    		FPA_Currentlayer=FPA_EVENT_SELECTPLAYGROUNDLAYER
+	    	Endif
+	    	//--select vector layer
+	    	If eventData()=FPA_EVENT_SELECTVECTORLAYER 
+	    		Setmenuitemradio BG_LAYERMENU,FPA_EVENT_SELECTSTATICLAYER,FPA_EVENT_SELECTFOREGROUNDLAYER,FPA_EVENT_SELECTVECTORLAYER
+	    		FPA_Currentlayer=FPA_EVENT_SELECTVECTORLAYER
+	    	Endif
+	    	//--select playgroundlayer2
+	    	If eventData()=FPA_EVENT_SELECTPLAYGROUNDLAYER2 
+	    		Setmenuitemradio BG_LAYERMENU,FPA_EVENT_SELECTSTATICLAYER,FPA_EVENT_SELECTFOREGROUNDLAYER,FPA_EVENT_SELECTPLAYGROUNDLAYER2
+	    		FPA_Currentlayer=FPA_EVENT_SELECTPLAYGROUNDLAYER2
+	    	Endif
+	    
+	    	//--select foreground parallax layer
+	   		If eventData()=FPA_EVENT_SELECTFOREGROUNDLAYER 
+	    		Setmenuitemradio BG_LAYERMENU,FPA_EVENT_SELECTSTATICLAYER,FPA_EVENT_SELECTFOREGROUNDLAYER,FPA_EVENT_SELECTFOREGROUNDLAYER
+	    		FPA_Currentlayer=FPA_EVENT_SELECTFOREGROUNDLAYER
+	    	Endif
+	    	
+	    	
+	    Endif
+		
+		//---POPUPS
+		If mouseclick()=2
+	    	//--Vector popup
+	    	if fpa_currentlayer=layer_vectors
+	    		If FPA_hiddennodes=0
+	    			result=showPopupMenu(BG_popupMenu)
+					if result=FPA_EVENT_CHOOSEADDNEWVECTOR
+						FPA_Addvectorpoint(mousex()-FPA_worldoffsetx,mousey()-fpa_worldoffsety)
+					Endif
+			
+					if result=FPA_EVENT_CHOOSECONNECTVECTOR
+						FPA_event_vectorconnect=1
+					Endif
+	    
+	   				if result=FPA_EVENT_CHOOSEDISCONNECTVECTOR
+						FPA_event_vectordisconnect=1
+					Endif
+	     
+	    	 		if result=FPA_EVENT_CHOOSEDELETEVECTOR
+						FPA_event_vectordelete=1
+					Endif
+				Endif
+		    Endif
+		Endif
+Endfunction

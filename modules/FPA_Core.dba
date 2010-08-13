@@ -1,0 +1,177 @@
+Rem ***** Included Source File *****
+
+//////////////////
+// ************** Included Source File **************                             
+// FULLPLATE ADVENTURES CORE MODULE
+// 
+// Author: miso
+//
+//////////////////////////////////////////////////////
+
+`----- Changelog:
+`(2010/07/11) - miso     - Created
+
+`----- USES: TE
+
+`=========Constants=========`
+`===========================`
+
+`==========Globals==========`
+Global World as integer
+`===========================`
+
+`===========Types===========`
+`===========================`
+
+
+`=========Functions=========`
+
+Function FPA_StartWorldbuilder()
+	//--init titan engine modules
+	SyS_Initcore()
+	SyS_InitResource()
+	//--sets the display mode
+	SyS_Initwindow(640,480,32,1,1,0,1,1)
+	//--loads the mouse
+	SyS_Initmouse("data\cursors\cursor2.dds")
+	//--loads the fonts
+	SyS_Initfonts()
+		SyS_Loadfont(1,"Data\fonts\smallfont.dat",8)
+		SyS_Loadfont(2,"Data\fonts\smallgoldfont.dat",8)
+	//--setup user interface and loads gadgets
+	SyS_InitGuiGraphics()
+	//--Setup the spriteimage tablet
+	FPA_CreateSpriteImagetable()
+	FPA_Setuplayers()
+	FPA_Setupvectorworld()
+	//---Start BlueGui
+	StartBlue "XXX","XXXXXX"
+	//---Init D3D
+	d3d_init
+	//---Init Box2D
+	b2SetScale 100, 180.0/3.1415926535, 1, 10000
+	b2SetScreenTransform 0, 0, 1, 0
+	world = b2CreateWorld(0, 2000, 1)
+	//--Hides the Titan mouse, shows builtin mouse	
+	SyS_Hidemouse():show mouse
+	//--Creates the main Bluegui window layout
+	FPA_Createmainwindow()
+	
+	//--TESTONLY
+	rem FPA_CreateTestvectors()
+	
+Endfunction
+
+
+
+Function FPA_RunWorldbuilder()
+	// draw layers
+	FPA_DRAWSTATICLAYER()
+	FPA_Drawbackgroundlayer()
+	FPA_DRAWPLAYGROUNDLAYER()
+	rem here will be between these two tha player and phy objects
+	FPA_DRAWPLAYGROUNDLAYER2()
+	FPA_DRAWforegroundlayer()
+	FPA_Drawvectors()
+	//--writes some info on screen
+	IF FPA_actuallevel$=""
+		SyS_CenterText(2,320,0,"Fullplate Adventures Worldbuilder tool V 1.0")
+		SyS_CenterText(1,320,20,"A program written by csotee,")
+		SyS_CenterText(1,320,40,"designed and drawed by Haller Zoltan")
+		SyS_CenterText(1,320,60,str$(mousex())+" : "+str$(mousey()))
+		SyS_CenterText(1,320,80,"Fps:"+str$(screen fps()))	
+	Else
+		SyS_CenterText(2,320,0,FPA_actuallevel$)
+		SyS_CenterText(1,320,15,str$(mousex())+" : "+str$(mousey()))
+		SyS_CenterText(1,320,30,"Fps:"+str$(screen fps()))
+		SyS_CenterText(1,320,45,"Vectors:"+str$(FPA_VEctornumbers))	
+	Endif
+
+	//--checks some meu events
+	FPA_CheckBguievents()
+	FPA_Getevent()
+
+	rem If fpa_event_rightmouseclick=1
+	If fpa_event_altkeypressed=1
+		Fpa_worldoffsetx=Fpa_worldoffsetx+fpa_mousemovex
+		Fpa_worldoffsety=Fpa_worldoffsety+fpa_mousemovey
+	Endif
+	
+If fpa_event_leftmouseclick=1
+	FPA_selectspritefromactuallayer()
+	If selectedsprite>0
+		if fpa_currentlayer=layer_playground
+			FPA_playgroundlayer(selectedsprite).Y=FPA_playgroundlayer(selectedsprite).Y+fpa_mousemovey
+			FPA_playgroundlayer(selectedsprite).x=FPA_playgroundlayer(selectedsprite).x+fpa_mousemovex
+		Endif
+		if fpa_currentlayer=layer_static
+			FPA_staticlayer(selectedsprite).Y=FPA_staticlayer(selectedsprite).Y+fpa_mousemovey
+			FPA_staticlayer(selectedsprite).x=FPA_staticlayer(selectedsprite).x+fpa_mousemovex
+		Endif
+		if fpa_currentlayer=layer_playground2
+			FPA_playgroundlayer2(selectedsprite).Y=FPA_playgroundlayer2(selectedsprite).Y+fpa_mousemovey
+			FPA_playgroundlayer2(selectedsprite).x=FPA_playgroundlayer2(selectedsprite).x+fpa_mousemovex
+		Endif
+		if fpa_currentlayer=layer_background
+			FPA_backgroundlayer(selectedsprite).Y=FPA_backgroundlayer(selectedsprite).Y+fpa_mousemovey
+			FPA_backgroundlayer(selectedsprite).x=FPA_backgroundlayer(selectedsprite).x+fpa_mousemovex
+		Endif
+		if fpa_currentlayer=layer_foreground
+			FPA_foregroundlayer(selectedsprite).Y=FPA_foregroundlayer(selectedsprite).Y+fpa_mousemovey
+			FPA_foregroundlayer(selectedsprite).x=FPA_foregroundlayer(selectedsprite).x+fpa_mousemovex
+		Endif
+	Endif
+
+	//---Vector part
+	if fpa_currentlayer=layer_vectors
+		If FPA_selectedvector>0
+			fpa_vectors(fpa_selectedvector).Y=fpa_vectors(fpa_selectedvector).Y+fpa_mousemovey
+			fpa_vectors(fpa_selectedvector).x=fpa_vectors(fpa_selectedvector).x+fpa_mousemovex
+			//--If event=connecting vector nodes
+			If FPA_event_vectorconnect=1
+				If fpa_connectvector1=0 
+					If FPA_selectedvector>0
+						fpa_connectvector1=fpa_selectedvector
+					Endif
+				Else
+					If fpa_connectvector2=0 
+						If FPA_selectedvector<>fpa_connectvector1
+							fpa_connectvector2=fpa_selectedvector
+							FPA_connectvectors(fpa_connectvector1,fpa_connectvector2)
+							fpa_connectvector1=0:fpa:FPA_connectvector2=0:FPA_EVENT_vectorconnect=0:fpa_selectedvector=0
+						Endif
+					Endif
+				Endif
+			Endif:`close vectorconnect event if
+			
+			If FPA_event_vectordisconnect=1
+				If FPA_selectedvector>0
+					If FPA_Selectedvector=FPA_vectornumbers or FPA_Selectedvector<FPA_vectornumbers
+						FPA_Disconnectvectors(FPA_Selectedvector)
+						FPA_Selectedvector=0
+						FPA_Event_vectordisconnect=0
+					Endif
+				Endif
+			Endif:`close vectorconnect event if
+			
+			//--delete vector	
+			If FPA_event_vectordelete=1
+				If FPA_selectedvector>0
+					If FPA_Selectedvector=FPA_vectornumbers or FPA_Selectedvector<FPA_vectornumbers
+						FPA_Deletevectorpoint(FPA_Selectedvector)
+						FPA_Selectedvector=0
+						FPA_Event_vectordelete=0
+					Endif
+				Endif
+			Endif:`close vectordelete event if
+			
+		
+			
+		Endif:`close selectedvector
+	Endif:`close vectorpart
+Endif :`close if lefmouseclick
+Endfunction
+
+
+Function FPA_CLoseWorldbuilder()
+Endfunction

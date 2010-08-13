@@ -1,0 +1,93 @@
+
+/////////////////////////////////////////////////////
+//
+// FullPlate Adventures, main module           
+//
+// Created by miso    
+//
+/////////////////////////////////////////////////////
+`----- Changelog:
+`(2010/07/11) - miso     - Created
+
+
+`=========MAIN=========`
+
+FPA_StartGame()
+maximize window
+//--for mouseclickstart
+FPA_EVENT_leftmousereleased=1
+fpa_runGame()
+FPA_Loadlevel("1")
+FPA_Loadlayers()
+FPA_Buildvectorphysics()
+
+dim cubes(150)
+centerx=320
+load image "data\sprites\crate.jpg",1
+for x=1 to 150
+    ballShape2 = b2CreatepolygonShapeasbox(32,32)
+    cubes(x) = b2CreateBody(world, b2BodyType_Dynamic(), 100 + centerX, 300,0,0)
+    ballFixture2 = b2CreateFixture(Cubes(x), ballShape2, 1, 0.3, 0.1)
+	
+	b2SetBodyImage cubes(x), 1, 0.27
+next x
+
+
+ 
+   groundBody = CreateStaticBox(centerX, screen height()-30000, -11111998, 38, 1)
+ 
+
+
+
+Do
+
+b2SetScreenTransform Fpa_worldoffsetx,fpa_worldoffsety,1,0
+
+
+
+	//--mouse settings
+	FPA_Setinternalmousevariables()
+	//--gadgets
+	SyS_Handlegadgets()
+	
+	//--mousejoint part 1
+	omc = msc
+    msc = mouseclick()
+    msd = msc-omc
+    msx = mousex()
+    msy = mousey()
+    
+    if msd = 1
+        ofixture = b2PickFixture(world, msx-fpa_worldoffsetx, msy-fpa_worldoffsety, 1)
+        if ofixture
+            obody = b2GetFixtureBody(ofixture)
+            mouseJoint = b2CreateMouseJoint(world, groundBody, obody, msx-fpa_worldoffsetx, msy-fpa_worldoffsety, 1)
+            b2SetMouseJointMaxForce mouseJoint, b2GetBodyMass(obody)*500000
+        endif
+    endif
+	//------------
+	
+	//--worldbuilder
+	FPA_Updatephy()
+	
+	// mouse joint part 2
+	    if mouseJoint
+        b2SetMouseJointTarget mouseJoint, msx-fpa_worldoffsetx, msy-fpa_worldoffsety
+        
+        line b2GetJointAnchorAX(mouseJoint), b2GetJointAnchorAY(mouseJoint), b2GetJointAnchorBX(mouseJoint), b2GetJointAnchorBY(mouseJoint)
+        
+        if msc = 0
+            b2DeleteJoint mouseJoint
+            mouseJoint = 0
+        endif
+    endif
+	
+	
+	rem b2SetDebugDraw 0, 0, 0, 0, 1
+	FPA_RunGame()
+	//--mouse
+	SyS_Handlemouse()
+	//--phy
+	//--sync
+	SyS_Synchandle()
+Loop

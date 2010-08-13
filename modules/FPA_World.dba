@@ -1,0 +1,64 @@
+Rem ***** Included Source File *****
+//////////////////
+// ************** Included Source File ***************                             
+// FULLPLATE ADVENTURES WORLD MODULE
+// 
+// Author: miso
+//
+//////////////////////////////////////////////////////
+
+`----- Changelog:
+`(2010/07/11) - miso     - Created
+`----- To-Do:
+
+`----- Purpose:
+
+`----- USES: none
+
+`----- Function List:
+
+`=========Constants=========`
+`===========================`
+
+`==========Globals==========`
+Global FPA_WORLDOFFSETX as Integer
+Global FPA_WORLDOFFSETY as Integer
+Global FPA_ACTUALLEVEL$ as String
+
+`===========================`
+
+`===========Types===========`
+`===========================`
+
+
+`=========Functions=========`
+
+//---Loads the level
+Function FPA_LoadLevel(param_levelfolder$)
+local var_fileid  as integer
+local var_file$   as string
+local var_string$ as string
+	//--Clears srite image table, if exists
+	FPA_ClearSpriteImagetable()
+	FPA_Resetalllayers()
+	//--loads the sprites
+	var_fileid    = grabresource(res_file)
+	var_filename$ = "data\levels\"+param_levelfolder$+"\spritedata.dat"
+	//--Load images if datafile exists
+	FPA_actuallevel$=param_levelfolder$
+	If File Exist(var_filename$)=1
+			Open to read var_fileid,var_filename$
+				While File End(var_fileid)=0
+					Read String var_fileid,var_string$
+					FPA_LoadSpriteImage("data\sprites\"+var_string$,var_string$)
+				Endwhile
+			Close File var_fileid
+			freeresource(var_fileid,res_file)
+			FPA_Resetworldoffset()
+	Endif
+Endfunction
+
+Function FPA_RESETWORLDOFFSET()
+	FPA_WORLDOFFSETX=0
+	FPA_WORLDOFFSETY=0
+Endfunction

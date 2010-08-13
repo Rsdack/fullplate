@@ -1,0 +1,39 @@
+Rem ***** Included Source File *****
+
+global mousejoint as integer
+
+
+
+
+
+
+
+
+
+
+
+function CreateStaticBox(x, y, w, h, imageId)
+    shape = b2CreatePolygonShapeAsBox(w, h)
+    body = b2CreateBody(world, b2BodyType_Static(), x, y)
+    fixture = b2CreateFixture(body, shape, 1)
+    
+    rem b2SetBodyImage body, imageId
+endfunction body
+
+
+
+Function createdynbox()
+ ballShape2 = b2CreatepolygonShapeasbox(32*1,32)
+    cubes(x) = b2CreateBody(world, b2BodyType_Dynamic(), 100 + centerX, 1,0,0)
+    ballFixture2 = b2CreateFixture(Cubes(x), ballShape2, 1, 0.3, 0.1)
+	load image "data\sprites\crate.jpg",1
+	b2SetBodyImage cubes(x), 1, 0.27
+Endfunction
+
+
+
+
+function FPA_updatephy()
+b2StepWorld world, 1.0/60.0
+Endfunction
+

@@ -1,0 +1,265 @@
+Rem ***** Included Source File *****
+//////////////////
+// ************** Included Source File ***************                             
+// Fullplate adventures vector world MODULE
+// 
+// Author: miso
+//
+//////////////////////////////////////////////////////
+
+`----- Changelog:
+`(2010/07/11) - miso     - Created
+`----- To-Do:
+
+`----- Purpose:
+
+`----- USES: none
+
+`----- Function List:
+
+`=========Constants=========`
+
+`===========================`
+
+`==========Globals==========`
+Global FPA_vectorscreated as boolean
+Global FPA_vectornumbers as integer
+Global FPA_Vectorsprite as myvectorspriteimagetype
+Global FPA_selectedvector as integer
+Global FPA_connectvector1 as integer
+Global FPA_connectvector2 as integer
+`===========================`
+
+`===========Types===========`
+Type myVectorpointtype
+	X as integer
+	Y as integer
+	Before as integer
+	After as integer
+EndType
+
+Type myvectorspriteimagetype
+	ID         as Integer
+	Width      as Integer
+	Height     as Integer
+	HalfWidth  as Integer
+	HalfHeight as Integer
+Endtype
+`===========================`
+
+
+`=========Functions=========`
+//---Setting up basic vectors
+Function FPA_Setupvectorworld()
+	If FPA_vectorscreated=0
+		//--Load a sprite for the nodes
+		FPA_LoadVectorSprite("data\system\skull32_1.png")
+		dim FPA_vectors(0) as myvectorpointtype
+		Fpa_Vectorscreated=1
+		FPA_Vectornumbers=0
+	Endif
+Endfunction
+
+//---Destroy vector data
+Function FPA_Destroyvectorworld()
+	If FPA_Vectorscreated=1
+		//--Delete node sprite
+		DXS DELETE SPRITE FPA_VectorSprite.ID
+		undim FPA_vectors()
+		Fpa_Vectorscreated=0
+		FPA_Vectornumbers=0
+	Endif
+Endfunction
+
+//--- Node Sprite loader
+Function FPA_LoadVectorSprite(param_imagefile$)
+	FPA_checkfile(param_imagefile$)
+	FPA_vectorsprite.ID=DXS CREATE SPRITE(param_ImageFile$)
+	FPA_vectorsprite.width=DXS GET SPRITE WIDTH(FPA_vectorsprite.ID)
+	FPA_vectorsprite.height=DXS GET SPRITE HEIGHT(FPA_vectorsprite.ID)
+	FPA_vectorsprite.halfwidth=DXS GET SPRITE WIDTH(FPA_vectorsprite.ID)/2
+	FPA_vectorsprite.halfheight=DXS GET SPRITE HEIGHT(FPA_vectorsprite.ID)/2
+Endfunction
+
+
+//---Adds a new vectorpoint node
+Function FPA_Addvectorpoint(param_x,param_y)
+	if FPA_Vectorscreated=1
+		array insert at bottom FPA_vectors()
+		FPA_vectornumbers=FPA_vectornumbers+1
+		FPA_Vectors(FPA_Vectornumbers).x=param_x
+		FPA_Vectors(FPA_Vectornumbers).y=param_y
+	Endif
+Endfunction
+
+//---Deletes a new vectorpoint node
+Function FPA_Deletevectorpoint(ID1)
+local var_counter as integer
+	If FPA_Vectorscreated=1
+		//--Create Temp vector
+		dim FPA_tempvectors(fpa_vectornumbers) as myvectorpointtype
+			For LDA=1 to fpa_vectornumbers
+				//--Disconnect vector if exists
+				If LDA=ID1 
+					var_counter=1
+					fpa_Disconnectvectors(ID1)
+				Endif
+				//--Create a temp array of remaining vectors 
+				If LDA<>ID1
+					FPA_tempvectors(LDA-var_counter).X=FPA_vectors(LDA).X
+					FPA_tempvectors(LDA-var_counter).Y=FPA_vectors(LDA).Y
+					FPA_tempvectors(LDA-var_counter).before=FPA_vectors(LDA).before
+					FPA_tempvectors(LDA-var_counter).after=FPA_vectors(LDA).after
+				Endif
+			Next LDA
+			
+			// subsctract 1 from vectornumbers, if we found an id last time
+			fpa_vectornumbers=fpa_vectornumbers-var_counter
+		
+			undim FPA_vectors()
+			Dim FPA_vectors(fpa_vectornumbers) as myvectorpointtype
+		
+			//--Redo the vectors array
+			For LDA=1 to fpa_vectornumbers
+					FPA_vectors(LDA).X=FPA_tempvectors(LDA).X
+					FPA_vectors(LDA).Y=FPA_tempvectors(LDA).Y
+					FPA_Vectors(LDA).before=0
+					FPA_vectors(LDA).after=0
+			Next LDA
+	Endif
+Endfunction
+
+
+
+
+
+
+//---Connects two vectorpoint node
+Function FPA_connectvectors(id1,id2)
+	fpa_vectors(id1).after=id2
+	fpa_vectors(id2).before=id1
+Endfunction
+
+//---Disconnects a Vectorpoint node from all joints
+Function FPA_disconnectvectors(ID1)
+	Fpa_vectors(fpa_vectors(id1).after).before=0
+	fpa_vectors(id1).after=0
+	Fpa_vectors(fpa_vectors(id1).before).after=0
+	fpa_vectors(id1).before=0
+Endfunction
+
+//---A function that draws the vector nodes to screen
+Function FPA_Drawvectors()
+	If FPA_hiddennodes=0:`S---hiddennodes
+		DXS BEGIN SPRITE RENDER FPA_VectorSprite.id
+			If FPA_Vectornumbers>0:`S---vectornums
+				For LDA=1 to FPA_Vectornumbers
+					DXS DRAW SPRITE FPA_vectorSprite.ID,FPA_vectors(LDA).X+fpa_worldoffsetx,FPA_vectors(LDA).Y+fpa_worldoffsety
+					If FPA_VEctors(LDA).after>0
+						d3d_line FPA_vectors(LDA).X+fpa_worldoffsetx+FPA_vectorsprite.halfwidth,FPA_vectors(LDA).Y+fpa_worldoffsety+FPA_vectorsprite.halfheight,FPA_vectors(FPA_vectors(LDA).after).X+fpa_worldoffsetx+FPA_vectorsprite.halfwidth,FPA_vectors(FPA_vectors(LDA).after).Y+fpa_worldoffsety+FPA_vectorsprite.halfheight
+					Endif
+				Next LDA
+			Endif:`F---vectornums
+		DXS END SPRITE RENDER FPA_VectorSprite.ID			
+	Endif:`F---hiddennodes
+Endfunction
+
+//---Selecting a vector pointnode
+Function FPA_Selectvectorpoint()
+	FPA_SelectedVector=0
+	If FPA_Hiddennodes=0
+		if fpa_currentlayer=layer_vectors
+			for LDA=1 to FPA_vectornumbers
+				If mousex()>FPA_vectors(LDA).X+FPA_worldoffsetx and mousex()<FPA_vectors(LDA).X+FPA_worldoffsetx+FPA_vectorsprite.width
+					If mousey()>FPA_vectors(LDA).Y+FPA_worldoffsetY and mouseY()<FPA_vectors(LDA).Y+FPA_worldoffsetY+FPA_vectorsprite.height
+					  FPA_SelectedVector=LDA
+					Endif
+				Endif
+			Next LDA
+		Endif
+	Endif
+Endfunction
+
+//---Testfunction, creates and connects some nodes
+Function FPA_CreateTestvectors()
+	If FPA_Vectorscreated=1
+		FPA_ADDVECTORpoint(10,10)
+		FPA_ADDVECTORpoint(100,100)
+		FPA_ADDVECTORpoint(400,10)
+		FPA_ADDVECTORpoint(430,10)
+		FPA_ADDVECTORpoint(400,50)
+		FPA_ADDVECTORpoint(400,80)
+		FPA_ADDVECTORpoint(400,100)
+			FPA_connectvectors(1,2)
+			FPA_connectvectors(2,3)
+			FPA_Connectvectors(3,4)
+			FPA_Connectvectors(4,1)
+			FPA_Connectvectors(5,6)
+			FPA_Connectvectors(6,7)
+	Endif
+Endfunction
+
+//--save vectors to file
+Function FPA_SaveVectors()
+local var_fileid as integer
+local LDA as integer
+	var_fileid=grabresource(res_file)
+		if file exist("Data\levels\"+fpa_actuallevel$+"\vectors.dat")=1 then delete file "Data\levels\"+fpa_actuallevel$+"\vectors.dat"
+			Open to write var_fileid,"Data\levels\"+fpa_actuallevel$+"\vectors.dat"
+				If FPA_vectorscreated = 1
+					Write long var_fileid,FPA_vectornumbers
+					If FPA_vectornumbers>0
+						For LDA=1 to FPA_vectornumbers
+							Write long var_fileid,FPA_vectors(LDA).x
+							Write long var_fileid,FPA_vectors(LDA).y
+							Write long var_fileid,FPA_vectors(LDA).before
+							Write long var_fileid,FPA_vectors(LDA).after
+						Next LDA
+					Endif
+				Endif
+			Close File var_fileid
+	freeresource(var_fileid,res_file)
+Endfunction
+
+
+//---vector loader from file
+Function FPA_Loadvectors()
+local var_fileid as integer
+var_fileid=grabresource(res_file)
+//---hmmm, this must be changed later just to remake the array, but got no time at the moment
+fpa_destroyvectorworld()
+fpa_setupvectorworld()
+
+		//--load the vectors
+		If file exist("Data\levels\"+fpa_actuallevel$+"\vectors.dat")=1
+		Open to read var_fileid,"Data\levels\"+fpa_actuallevel$+"\vectors.dat"
+			If FPA_vectorscreated = 1
+			read long var_fileid,FPA_vectornumbers
+				for LDA=1 to fpa_vectornumbers
+					array insert at bottom fpa_vectors()
+					Read long var_fileid,FPA_vectors(LDA).x
+					Read long var_fileid,FPA_vectors(LDA).y
+					Read long var_fileid,FPA_vectors(LDA).before
+					Read long var_fileid,FPA_vectors(LDA).after
+				Next LDA
+			Endif
+		Close File var_fileid
+		Endif
+freeresource(var_fileid,res_file)  	
+Endfunction
+
+
+Function FPA_Buildvectorphysics()
+	If FPA_vectorscreated=1
+		If FPA_vectornumbers>0
+			for LDA=1 to FPA_vectornumbers
+				body = b2CreateBody(world, b2BodyType_Static(), 0, 0)
+				If FPA_vectors(LDA).after>0
+					shape = b2CreatePolygonShapeAsEdge(FPA_vectors(LDA).x+16,FPA_vectors(LDA).y+16, FPA_vectors(FPA_vectors(LDA).after).x+16, FPA_vectors(FPA_vectors(LDA).after).y+16)
+			    	fixture = b2CreateFixture(body, shape, 1)
+			   		b2DeleteShape shape
+				Endif
+			Next LDA
+		Endif
+	Endif
+Endfunction

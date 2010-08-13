@@ -1,0 +1,112 @@
+; **** Dark BASIC Professional Project File ****
+; **** Written by Synergy Editor ****
+version=DBP1.00
+project name=FullPlate Adventures
+
+; **** source file information ****
+main=modules\main_FullPlate.dba
+LineMain=81
+include1=TitanEngine\SyS_Blank.dba
+LineInclude1=1
+include2=TitanEngine\SyS_BlueGui.dba
+LineInclude2=1
+include3=TitanEngine\SyS_BlueGuiConstants.dba
+LineInclude3=1
+include4=TitanEngine\SyS_Core.dba
+LineInclude4=1
+include5=TitanEngine\SyS_Debug.dba
+LineInclude5=1
+include6=TitanEngine\SyS_Display.dba
+LineInclude6=1
+include7=TitanEngine\SyS_Fonts.dba
+LineInclude7=1
+include8=TitanEngine\SyS_Gadgets.dba
+LineInclude8=2
+include9=TitanEngine\SyS_Input.dba
+LineInclude9=1
+include10=TitanEngine\SyS_Mouse.dba
+LineInclude10=1
+include11=TitanEngine\SyS_Resource.dba
+LineInclude11=1
+include12=TitanEngine\SyS_Windows.dba
+LineInclude12=1
+include13=modules\FPA_BGUI.dba
+LineInclude13=2
+include14=modules\FPA_Core.dba
+LineInclude14=19
+include15=modules\FPA_Debug.dba
+LineInclude15=1
+include16=modules\FPA_Events.dba
+LineInclude16=1
+include17=modules\FPA_Layers.dba
+LineInclude17=1
+include18=modules\FPA_SpriteImages.dba
+LineInclude18=1
+include19=modules\FPA_Vectors.dba
+LineInclude19=253
+include20=modules\FPA_World.dba
+LineInclude20=26
+include21=modules\FPA_Box2D.dba
+LineInclude21=9
+include22=modules\FPA_Gamecore.dba
+LineInclude22=74
+
+; **** Executable Information  ***
+; build types: exe, media, installer, alone
+executable=FullPlate Adventures.exe
+build type=exe
+; ** Media file compression **
+compression=NO
+
+; ** Media file encryption **
+encryption=NO
+; ** Display the card options screen window? **
+card options window=NO
+
+; **** debugger information ****
+; If the editor sets this to yes, it is running in debug mode
+CLI=NO
+CommandLineArguments=
+
+; **** display mode information ****
+app title=FullPlate Adventures
+
+; graphics mode options: fullscreen, window, desktop, fulldesktop, hidden
+graphics mode=fulldesktop
+fullscreen resolution=640x480x32
+
+; arbitrary sizes are valid for windowed mode
+window resolution=640x480
+
+; **** External Files Information ****
+
+; **** Media ****
+; Example entries: media1=graphics\*.jpg
+media root path=C:\==Darkbasic Pro==\Dark Basic Professional\Projects\=Realwork=\=Fullplate=\
+
+; **** Icons ****
+
+; **** Cursors ****
+
+; **** Version Info ****
+VerComments=
+VerCompany=
+VerFileDesc=
+VerFileNumber=v1.0
+VerInternal=v1.0
+VerCopyright=
+VerTrademark=
+VerFilename=
+VerProduct=
+VerProductNumber=v1.0
+
+; **** To Do ****
+
+; **** Comments ****
+comments1=
+
+; **** Advanced (setup.ini) configuration ****
+RemoveSafetyCode=NO
+SafeArrays=YES
+LocalTempFolder=NO
+ExternaliseDLLS=NO

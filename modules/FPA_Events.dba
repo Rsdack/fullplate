@@ -1,0 +1,144 @@
+Rem ***** Included Source File *****
+//////////////////
+// ************** Included Source File ***************                             
+// FULLPLATE ADVENTURES EVENTS MODULE
+// 
+// Author: miso
+//
+//////////////////////////////////////////////////////
+
+`----- Changelog:
+`(2010/07/11) - miso     - Created
+
+`=========Constants=========`
+`===========================`
+
+`==========Globals==========`
+Global FPA_EVENT_LEFTMOUSECLICK  as Boolean
+Global FPA_EVENT_RIGHTMOUSECLICK as Boolean
+Global Fpa_Event_leftmousereleased as Boolean
+Global FPA_Mousemovex as Integer
+Global FPA_MousemoveY as Integer
+Global FPA_OldMousex as Integer
+Global FPA_OldMouseY as Integer
+Global FPA_Mousex as Integer
+Global FPA_MouseY as Integer
+Global FPA_Event_altkeypressed as boolean
+Global FPA_Event_vectorconnect as boolean
+Global FPA_Event_vectordisconnect as boolean
+Global FPA_Event_vectordelete as boolean
+
+`===========================`
+
+`===========Types===========`
+`===========================`
+
+
+`=========Functions=========`
+//---Checks the events independently
+FUNCTION FPA_GETEVENT()
+	//--check mouseclick event
+	If mouseclick()=1 
+		fpa_event_leftmouseclick=1
+	Else
+		If Fpa_event_leftmouseclick=1 then Fpa_Event_leftmousereleased=1
+		fpa_event_leftmouseclick=0
+		fpa_selectedvector=0
+		selectedsprite=0
+	Endif
+	//--check rightmouseclick event
+	If mouseclick()=2 
+		fpa_event_rightmouseclick=1
+	Else
+		fpa_event_rightmouseclick=0
+	Endif
+	//--check if altkeypressed
+	If keystate(56)=1 
+		FPA_Event_altkeypressed=1
+	Else
+		FPA_Event_altkeypressed=0
+	Endif
+
+	//checks mousemoves
+	Fpa_Mousex=Mousex()
+	Fpa_Mousey=Mousey()
+
+	//--Show some info on screen
+	If FPA_event_vectorconnect=1
+		If fpa_connectvector1=0 
+			SyS_text(2,FPA_mousex,FPA_mousey+20,"Select first vector node!")
+		Else
+			If fpa_connectvector2=0 
+				SyS_text(2,FPA_mousex,FPA_mousey+20,"Select second vector node!")
+			Endif
+		Endif
+	Endif
+	//--Another info		
+	If FPA_event_vectordisconnect=1
+		If fpa_selectedvector1=0 
+			SyS_text(2,FPA_mousex,FPA_mousey+20,"Select a vector node to disconnect!")
+		Endif
+	Endif
+	//--Another vectoreventinfo	
+	If FPA_Selectedvector>0
+		SyS_centertext(2,FPA_mousex,FPA_mousey+20,"Vector node "+str$(FPA_selectedvector))
+		SyS_centertext(2,FPA_mousex,FPA_mousey+35,"X "+str$(FPA_vectors(FPA_selectedvector).x))
+		SyS_centertext(2,FPA_mousex,FPA_mousey+50,"Y "+str$(FPA_vectors(FPA_selectedvector).y))
+	Endif
+	
+	//--Spriteinfo
+	If Selectedsprite>0
+		if FPA_currentlayer=layer_static 
+			SyS_centertext(2,FPA_mousex,FPA_mousey+20,"Sprite ID "+str$(selectedsprite))
+			SyS_centertext(2,FPA_mousex,FPA_mousey+35,"X "+str$(FPA_staticlayer(selectedsprite).x))
+			SyS_centertext(2,FPA_mousex,FPA_mousey+50,"Y "+str$(FPA_staticlayer(selectedsprite).y))
+		Endif
+		
+		if FPA_currentlayer=layer_background 
+			SyS_centertext(2,FPA_mousex,FPA_mousey+20,"Sprite ID "+str$(selectedsprite))
+			SyS_centertext(2,FPA_mousex,FPA_mousey+35,"X "+str$(FPA_backgroundlayer(selectedsprite).x))
+			SyS_centertext(2,FPA_mousex,FPA_mousey+50,"Y "+str$(FPA_backgroundlayer(selectedsprite).y))
+		Endif
+		
+		
+		if FPA_currentlayer=layer_playground 
+			SyS_centertext(2,FPA_mousex,FPA_mousey+20,"Sprite ID "+str$(selectedsprite))
+			SyS_centertext(2,FPA_mousex,FPA_mousey+35,"X "+str$(FPA_playgroundlayer(selectedsprite).x))
+			SyS_centertext(2,FPA_mousex,FPA_mousey+50,"Y "+str$(FPA_playgroundlayer(selectedsprite).y))
+		Endif
+	
+		if FPA_currentlayer=layer_playground2 
+			SyS_centertext(2,FPA_mousex,FPA_mousey+20,"Sprite ID "+str$(selectedsprite))
+			SyS_centertext(2,FPA_mousex,FPA_mousey+35,"X "+str$(FPA_playgroundlayer2(selectedsprite).x))
+			SyS_centertext(2,FPA_mousex,FPA_mousey+50,"Y "+str$(FPA_playgroundlayer2(selectedsprite).y))
+		Endif
+
+		if FPA_currentlayer=layer_foreground 
+			SyS_centertext(2,FPA_mousex,FPA_mousey+20,"Sprite ID "+str$(selectedsprite))
+			SyS_centertext(2,FPA_mousex,FPA_mousey+35,"X "+str$(FPA_foregroundlayer(selectedsprite).x))
+			SyS_centertext(2,FPA_mousex,FPA_mousey+50,"Y "+str$(FPA_foregroundlayer(selectedsprite).y))
+		Endif
+
+
+	
+	Endif
+		
+ENDFUNCTION
+
+Function FPA_Setinternalmousevariables()
+	If FPA_OldMousex<>FPA_mousex 
+		FPA_Mousemovex = -1*(Fpa_oldmousex-Fpa_mousex)
+		FPA_OldMousex=FPA_mousex
+	Else
+		FPA_Mousemovex = 0
+	Endif
+	If FPA_OldMouseY<>FPA_mouseY 
+		FPA_Mousemovey = -1*(Fpa_oldmousey-Fpa_mousey)
+		FPA_OldMouseY=FPA_mouseY
+	Else
+		FPA_Mousemovey = 0
+	Endif
+	
+	
+	
+Endfunction

@@ -1,0 +1,108 @@
+; **** Dark BASIC Professional Project File ****
+; **** Written by Synergy Editor ****
+version=DBP1.00
+project name=FullPlate Adventures
+
+; **** source file information ****
+main=modules\main_FullPlateWorldBuilder.dba
+LineMain=30
+include1=TitanEngine\SyS_Core.dba
+LineInclude1=6
+include2=TitanEngine\SyS_Debug.dba
+LineInclude2=265
+include3=TitanEngine\SyS_Display.dba
+LineInclude3=100
+include4=TitanEngine\SyS_Fonts.dba
+LineInclude4=16
+include5=TitanEngine\SyS_Gadgets.dba
+LineInclude5=365
+include6=TitanEngine\SyS_Input.dba
+LineInclude6=1
+include7=TitanEngine\SyS_Mouse.dba
+LineInclude7=0
+include8=TitanEngine\SyS_Resource.dba
+LineInclude8=141
+include9=TitanEngine\SyS_Windows.dba
+LineInclude9=2
+include10=TitanEngine\SyS_Blank.dba
+LineInclude10=30
+include11=TitanEngine\SyS_BlueGui.dba
+LineInclude11=21
+include12=TitanEngine\SyS_BlueGuiConstants.dba
+LineInclude12=77
+include13=modules\FPA_Core.dba
+LineInclude13=135
+include14=modules\FPA_World.dba
+LineInclude14=43
+include15=modules\FPA_BGUI.dba
+LineInclude15=327
+include16=modules\FPA_SpriteImages.dba
+LineInclude16=15
+include17=modules\FPA_Debug.dba
+LineInclude17=51
+include18=modules\FPA_Layers.dba
+LineInclude18=569
+include19=modules\FPA_Events.dba
+LineInclude19=118
+include20=modules\FPA_Vectors.dba
+LineInclude20=179
+
+; **** Executable Information  ***
+; build types: exe, media, installer, alone
+executable=FullPlate WorldBuilder.exe
+build type=exe
+; ** Media file compression **
+compression=NO
+
+; ** Media file encryption **
+encryption=NO
+; ** Display the card options screen window? **
+card options window=NO
+
+; **** debugger information ****
+; If the editor sets this to yes, it is running in debug mode
+CLI=NO
+CommandLineArguments=
+
+; **** display mode information ****
+app title=FullPlate Adventures
+
+; graphics mode options: fullscreen, window, desktop, fulldesktop, hidden
+graphics mode=window
+fullscreen resolution=640x400x32
+
+; arbitrary sizes are valid for windowed mode
+window resolution=640x480
+
+; **** External Files Information ****
+
+; **** Media ****
+; Example entries: media1=graphics\*.jpg
+media root path=C:\==Darkbasic Pro==\Dark Basic Professional\Projects\=Realwork=\=Fullplate=\
+
+; **** Icons ****
+
+; **** Cursors ****
+
+; **** Version Info ****
+VerComments=
+VerCompany=
+VerFileDesc=
+VerFileNumber=v1.0
+VerInternal=v1.0
+VerCopyright=
+VerTrademark=
+VerFilename=
+VerProduct=
+VerProductNumber=v1.0
+
+; **** To Do ****
+
+; **** Comments ****
+comments1=
+
+; **** Advanced (setup.ini) configuration ****
+RemoveSafetyCode=NO
+SafeArrays=YES
+LocalTempFolder=NO
+ExternaliseDLLS=NO
