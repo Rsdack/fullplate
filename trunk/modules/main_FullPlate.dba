@@ -17,16 +17,18 @@ maximize window
 //--for mouseclickstart
 FPA_EVENT_leftmousereleased=1
 fpa_runGame()
+rem FPA_Loadlevel("=mintalevel=")
 FPA_Loadlevel("1")
+
 FPA_Loadlayers()
 FPA_Buildvectorphysics()
 
 dim cubes(150)
 centerx=320
 load image "data\sprites\crate.jpg",1
-for x=1 to 150
+for x=1 to 75
     ballShape2 = b2CreatepolygonShapeasbox(32,32)
-    cubes(x) = b2CreateBody(world, b2BodyType_Dynamic(), 100 + centerX, 300,0,0)
+    cubes(x) = b2CreateBody(world, b2BodyType_Dynamic(), 100 + centerX, 100,0,0)
     ballFixture2 = b2CreateFixture(Cubes(x), ballShape2, 1, 0.3, 0.1)
 	
 	b2SetBodyImage cubes(x), 1, 0.27

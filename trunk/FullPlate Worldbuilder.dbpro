@@ -5,7 +5,7 @@ project name=FullPlate Adventures
 
 ; **** source file information ****
 main=modules\main_FullPlateWorldBuilder.dba
-LineMain=30
+LineMain=13
 include1=TitanEngine\SyS_Core.dba
 LineInclude1=6
 include2=TitanEngine\SyS_Debug.dba
@@ -13,11 +13,11 @@ LineInclude2=265
 include3=TitanEngine\SyS_Display.dba
 LineInclude3=100
 include4=TitanEngine\SyS_Fonts.dba
-LineInclude4=16
+LineInclude4=120
 include5=TitanEngine\SyS_Gadgets.dba
 LineInclude5=365
 include6=TitanEngine\SyS_Input.dba
-LineInclude6=1
+LineInclude6=95
 include7=TitanEngine\SyS_Mouse.dba
 LineInclude7=0
 include8=TitanEngine\SyS_Resource.dba
@@ -29,23 +29,27 @@ LineInclude10=30
 include11=TitanEngine\SyS_BlueGui.dba
 LineInclude11=21
 include12=TitanEngine\SyS_BlueGuiConstants.dba
-LineInclude12=77
+LineInclude12=9
 include13=modules\FPA_Core.dba
-LineInclude13=135
+LineInclude13=77
 include14=modules\FPA_World.dba
-LineInclude14=43
+LineInclude14=72
 include15=modules\FPA_BGUI.dba
-LineInclude15=327
+LineInclude15=492
 include16=modules\FPA_SpriteImages.dba
-LineInclude16=15
+LineInclude16=278
 include17=modules\FPA_Debug.dba
-LineInclude17=51
+LineInclude17=0
 include18=modules\FPA_Layers.dba
-LineInclude18=569
+LineInclude18=0
 include19=modules\FPA_Events.dba
 LineInclude19=118
 include20=modules\FPA_Vectors.dba
 LineInclude20=179
+include21=modules\FPA_Controls.dba
+LineInclude21=108
+include22=modules\SYS_BGUI_USERID.dba
+LineInclude22=25
 
 ; **** Executable Information  ***
 ; build types: exe, media, installer, alone

@@ -1,0 +1,121 @@
+
+
+
+//////////////////////////////////////////////////////                         
+// FULLPLATE CONTROLS MODULE
+// 
+// Author: miso, using RiiDii's scancode constants
+//
+//////////////////////////////////////////////////////
+`----- Changelog:
+`(2010/07/11) - miso     - Created
+
+`=========Constants=========`
+#Constant FPA_k1 =keystate(2)
+#Constant FPA_k2 =keystate(3)
+#Constant FPA_k3 =keystate(4)
+#Constant FPA_k4 =keystate(5)
+#Constant FPA_k5 =keystate(6)
+#Constant FPA_k6 =keystate(7)
+#Constant FPA_k7 =keystate(8)
+#Constant FPA_k8 =keystate(9)
+#Constant FPA_k9 =keystate(10)
+#Constant FPA_k0 =keystate(11)
+#Constant FPA_ka =keystate(30)
+#Constant FPA_kb =keystate(48)
+#Constant FPA_kc =keystate(46)
+#Constant FPA_kd =keystate(32)
+#Constant FPA_ke =keystate(18)
+#Constant FPA_kf =keystate(33)
+#Constant FPA_kg =keystate(34)
+#Constant FPA_kh =keystate(35)
+#Constant FPA_ki =keystate(23)
+#Constant FPA_kj =keystate(36)
+#Constant FPA_kk =keystate(37)
+#Constant FPA_kl =keystate(38)
+#Constant FPA_km =keystate(50)
+#Constant FPA_kn =keystate(49)
+#Constant FPA_ko =keystate(24)
+#Constant FPA_kp =keystate(25)
+#Constant FPA_kq =keystate(16)
+#Constant FPA_kr =keystate(19)
+#Constant FPA_ks =keystate(31)
+#Constant FPA_kt =keystate(20)
+#Constant FPA_ku =keystate(22)
+#Constant FPA_kv =keystate(47)
+#Constant FPA_kw =keystate(17)
+#Constant FPA_kx =keystate(45)
+#Constant FPA_ky =keystate(21)
+#Constant FPA_kz =keystate(44)
+
+#Constant FPA_leftshift = keystate(42)
+#Constant FPA_rightshift = keystate(54)
+#Constant FPA_leftctrl = keystate(29)
+#Constant FPA_rightctrl = keystate(157)
+
+#Constant FPA_kp1 = keystate(79)
+#Constant FPA_kp2 = keystate(80)
+#Constant FPA_kp3 = keystate(81)
+#Constant FPA_kp4 = keystate(75)
+#Constant FPA_kp5 = keystate(76)
+#Constant FPA_kp6 = keystate(77)
+#Constant FPA_kp7 = keystate(71)
+#Constant FPA_kp8 = keystate(72)
+#Constant FPA_kp9 = keystate(73)
+#Constant FPA_kp0 = keystate(82)
+
+#Constant FPA_sc1 2
+#Constant FPA_sc2 3
+#Constant FPA_sc3 4
+#Constant FPA_sc4 5
+#Constant FPA_sc5 6
+#Constant FPA_sc6 7
+#Constant FPA_sc7 8
+#Constant FPA_sc8 9
+#Constant FPA_sc9 10
+#Constant FPA_sc0 11
+#Constant FPA_sca 30
+#Constant FPA_scb 48
+#Constant FPA_scc 46
+#Constant FPA_scd 32
+#Constant FPA_sce 18
+#Constant FPA_scf 33
+#Constant FPA_scg 34
+#Constant FPA_sch 35
+#Constant FPA_sci 23
+#Constant FPA_scj 36
+#Constant FPA_sck 37
+#Constant FPA_scl 38
+#Constant FPA_scm 50
+#Constant FPA_scn 49
+#Constant FPA_sco 24
+#Constant FPA_scp 25
+#Constant FPA_scq 16
+#Constant FPA_scr 19
+#Constant FPA_scs 31
+#Constant FPA_sct 20
+#Constant FPA_scu 22
+#Constant FPA_scv 47
+#Constant FPA_scw 17
+#Constant FPA_scx 45
+#Constant FPA_scy 21
+#Constant FPA_scz 44
+
+#Constant FPA_sclshft = 42
+#Constant FPA_scrshft = 54
+#Constant FPA_sclctrl = 29
+#Constant FPA_scrctrl = 157
+
+
+
+`===========================`
+
+`==========Globals==========`
+`===========================`
+
+`===========Types===========`
+`===========================`
+
+
+`=========Functions=========`
+
