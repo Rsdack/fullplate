@@ -16,6 +16,8 @@ Rem ***** Included Source File *****
 `==========Globals==========`
 Global FPA_LoadedSpriteImages      as Integer
 Global FPA_SpriteImageTablecreated as Boolean
+Global FPA_SelectedSpriteImage     as Integer
+Global FPA_Nopicture               as myspriteimagetype
 `===========================`
 
 `===========Types===========`
@@ -31,9 +33,12 @@ Endtype
 `===========================`
 
 
+
+
 `=========Functions=========`
 //---Creates an array for image data
 Function FPA_CreateSpriteImagetable()
+
 	Dim FPA_Spriteimage(0) as myspriteimagetype
 	FPA_SpriteImageTablecreated=1
 Endfunction
@@ -59,6 +64,11 @@ Function FPA_ClearSpriteImagetable()
 local LDA as integer
 	//--Basic debug checks
 	FPA_CheckSpriteTable()
+	If itemCount(BG_Loadedsprites)>0
+		for LDA=0 to itemCount(BG_Loadedsprites)+10
+			removeitem BG_Loadedsprites,0
+		Next LDA
+	Endif
 	//--detroy sprite images
 	If FPA_Loadedspriteimages>0
 		For LDA=1 to FPA_Loadedspriteimages
@@ -76,15 +86,200 @@ Function FPA_LoadSpriteImage(param_ImageFile$,param_name$)
 	//--basic debug checks
 	FPA_CheckDxSprites()
 	FPA_CheckSpriteTable()
-	FPA_Checkfile(param_ImageFile$)
-	//--add new element to image array
-	Array Insert At Bottom FPA_Spriteimage()
-	//--setup basic variables
-	FPA_LoadedSpriteImages=FPA_LoadedSpriteImages+1
-	FPA_SpriteImage(FPA_LoadedSpriteImages).ID=DXS CREATE SPRITE(param_ImageFile$)
-	FPA_SpriteImage(FPA_LoadedSpriteImages).Name=param_name$
-	FPA_SpriteImage(FPA_LoadedSpriteImages).width=DXS GET SPRITE WIDTH(FPA_SpriteImage(FPA_LoadedSpriteImages).ID)
-	FPA_SpriteImage(FPA_LoadedSpriteImages).height=DXS GET SPRITE HEIGHT(FPA_SpriteImage(FPA_LoadedSpriteImages).ID)
-	FPA_SpriteImage(FPA_LoadedSpriteImages).halfwidth=DXS GET SPRITE WIDTH(FPA_SpriteImage(FPA_LoadedSpriteImages).ID)/2
-	FPA_SpriteImage(FPA_LoadedSpriteImages).halfheight=DXS GET SPRITE HEIGHT(FPA_SpriteImage(FPA_LoadedSpriteImages).ID)/2
+	If param_name$<>""
+		FPA_Checkfile(param_ImageFile$)
+		//--add new element to image array
+		Array Insert At Bottom FPA_Spriteimage()
+		//--setup basic variables
+		FPA_LoadedSpriteImages=FPA_LoadedSpriteImages+1
+		FPA_SpriteImage(FPA_LoadedSpriteImages).ID=DXS CREATE SPRITE(param_ImageFile$)
+		FPA_SpriteImage(FPA_LoadedSpriteImages).Name=param_name$
+		addItem bg_loadedsprites,param_name$
+		FPA_SpriteImage(FPA_LoadedSpriteImages).width=DXS GET SPRITE WIDTH(FPA_SpriteImage(FPA_LoadedSpriteImages).ID)
+		FPA_SpriteImage(FPA_LoadedSpriteImages).height=DXS GET SPRITE HEIGHT(FPA_SpriteImage(FPA_LoadedSpriteImages).ID)
+		FPA_SpriteImage(FPA_LoadedSpriteImages).halfwidth=DXS GET SPRITE WIDTH(FPA_SpriteImage(FPA_LoadedSpriteImages).ID)/2
+		FPA_SpriteImage(FPA_LoadedSpriteImages).halfheight=DXS GET SPRITE HEIGHT(FPA_SpriteImage(FPA_LoadedSpriteImages).ID)/2
+	Endif
 Endfunction
+
+
+Function FPA_Saveimages()
+//***************************************************************************************
+//*                                                                                     *
+//*   Miso:                                                                             *
+//*                                                                                     *
+//*      Saves all static sprite image names.                                           *
+//*                                                                                     *
+//*                                                                                     *
+//*                                                                                     *
+//***************************************************************************************	
+local var_fileid as integer
+local LDA as integer
+
+		var_fileid=grabresource(res_file)
+	    		//--save background layer
+	    		if file exist("Data\levels\"+fpa_actuallevel$+"\spritedata.dat")=1 then delete file "Data\levels\"+fpa_actuallevel$+"\spritedata.dat"
+	    		Open to write var_fileid,"Data\levels\"+fpa_actuallevel$+"\spritedata.dat"
+	    			If FPA_layerscreated = 1
+						If FPA_loadedspriteimages>0
+							For LDA=1 to FPA_loadedspriteimages
+								a$=FPA_Spriteimage(LDA).Name
+								If a$<>"" then Write String var_fileid,a$
+							Next LDA
+						Endif
+					Endif
+	    		Close File var_fileid
+	    freeresource(var_fileid,res_file)
+	       	
+	       	
+Endfunction
+
+
+
+
+
+
+
+Function FPA_replaceSpriteImage(Num,param_ImageFile$,param_name$)
+	FPA_CheckDxSprites()
+	FPA_CheckSpriteTable()
+	FPA_Checkfile(param_ImageFile$)
+	If fpa_spriteimage(num).ID<>FPA_nopicture.id
+		DXS DELETE SPRITE FPA_SpriteImage(num).ID
+	Endif
+	FPA_SpriteImage(num).ID=DXS CREATE SPRITE(param_ImageFile$)
+	FPA_SpriteImage(num).Name=param_name$
+	FPA_SpriteImage(num).width=DXS GET SPRITE WIDTH(FPA_SpriteImage(num).ID)
+	FPA_SpriteImage(num).height=DXS GET SPRITE HEIGHT(FPA_SpriteImage(num).ID)
+	FPA_SpriteImage(num).halfwidth=DXS GET SPRITE WIDTH(FPA_SpriteImage(num).ID)/2
+	FPA_SpriteImage(num).halfheight=DXS GET SPRITE HEIGHT(FPA_SpriteImage(num).ID)/2
+	
+
+Endfunction
+
+
+//---Delete a sprite image (crash program if image is in use)
+Function FPA_DeleteSpriteImage(Num)
+	DXS DELETE SPRITE FPA_SpriteImage(num).ID
+	FPA_SpriteImage(num).ID         = FPA_Nopicture.ID
+	FPA_SpriteImage(num).Name       = FPA_Nopicture.Name
+	FPA_SpriteImage(num).width      = FPA_Nopicture.width
+	FPA_SpriteImage(num).height     = FPA_Nopicture.height
+	FPA_SpriteImage(num).halfwidth  = FPA_Nopicture.halfwidth
+	FPA_SpriteImage(num).halfheight = FPA_Nopicture.halfheight
+Endfunction
+
+
+Function FPA_SETUPNOPICTURE(param_imagefile$)
+	
+	FPA_CheckDxSprites()
+	FPA_CheckSpriteTable()
+	FPA_Checkfile(param_ImageFile$)
+	//--setup basic variables
+	FPA_Nopicture.ID=DXS CREATE SPRITE(param_ImageFile$)
+	FPA_Nopicture.Name=param_name$
+	FPA_Nopicture.width=DXS GET SPRITE WIDTH(FPA_Nopicture.ID)
+	FPA_Nopicture.height=DXS GET SPRITE HEIGHT(FPA_Nopicture.ID)
+	FPA_Nopicture.halfwidth=DXS GET SPRITE WIDTH(FPA_Nopicture.ID)/2
+	FPA_Nopicture.halfheight=DXS GET SPRITE HEIGHT(FPA_Nopicture.ID)/2
+	
+Endfunction
+
+
+Function FPA_RefreshAllSpriteData()
+	If FPA_layerscreated = 1
+		//--refresh staticlayer
+		For LDA=1 to FPA_staticspritenumbers
+				If fpa_spriteimage(FPA_Staticlayer(LDA).id).ID=FPA_nopicture.id
+					FPA_Staticlayer(LDA).width = FPA_nopicture.width
+					FPA_Staticlayer(LDA).height = FPA_nopicture.height
+					FPA_Staticlayer(LDA).middlewidth = FPA_nopicture.halfwidth
+					FPA_Staticlayer(LDA).middleheight = FPA_nopicture.halfheight
+				Else
+					FPA_Staticlayer(LDA).width = FPA_Spriteimage(FPA_staticlayer(LDA).id).width
+					FPA_Staticlayer(LDA).height = FPA_Spriteimage(FPA_staticlayer(LDA).id).height
+					FPA_Staticlayer(LDA).middlewidth = FPA_Spriteimage(FPA_staticlayer(LDA).id).halfwidth
+					FPA_Staticlayer(LDA).middleheight = FPA_Spriteimage(FPA_staticlayer(LDA).id).halfheight
+				Endif
+		Next LDA
+	
+	
+		//--refresh backlayer
+		For LDA=1 to FPA_backgroundspritenumbers
+				If fpa_spriteimage(FPA_backgroundlayer(LDA).ID).id=FPA_nopicture.id
+					FPA_backgroundlayer(LDA).width = FPA_nopicture.width
+					FPA_backgroundlayer(LDA).height = FPA_nopicture.height
+					FPA_backgroundlayer(LDA).middlewidth = FPA_nopicture.halfwidth
+					FPA_backgroundlayer(LDA).middleheight = FPA_nopicture.halfheight
+				Else
+					FPA_backgroundlayer(LDA).width = FPA_Spriteimage(FPA_backgroundlayer(LDA).id).width
+					FPA_backgroundlayer(LDA).height = FPA_Spriteimage(FPA_backgroundlayer(LDA).id).height
+					FPA_backgroundlayer(LDA).middlewidth = FPA_Spriteimage(FPA_backgroundlayer(LDA).id).halfwidth
+					FPA_backgroundlayer(LDA).middleheight = FPA_Spriteimage(FPA_backgroundlayer(LDA).id).halfheight
+				Endif
+
+
+		Next LDA
+	
+
+	For LDA=1 to FPA_playgroundspritenumbers
+				If fpa_spriteimage(FPA_playgroundlayer(LDA).ID).id=FPA_nopicture.id
+					FPA_playgroundlayer(LDA).width = FPA_nopicture.width
+					FPA_playgroundlayer(LDA).height = FPA_nopicture.height
+					FPA_playgroundlayer(LDA).middlewidth = FPA_nopicture.halfwidth
+					FPA_playgroundlayer(LDA).middleheight = FPA_nopicture.halfheight
+				Else
+					FPA_playgroundlayer(LDA).width = FPA_Spriteimage(FPA_playgroundlayer(LDA).id).width
+					FPA_playgroundlayer(LDA).height = FPA_Spriteimage(FPA_playgroundlayer(LDA).id).height
+					FPA_playgroundlayer(LDA).middlewidth = FPA_Spriteimage(FPA_playgroundlayer(LDA).id).halfwidth
+					FPA_playgroundlayer(LDA).middleheight = FPA_Spriteimage(FPA_playgroundlayer(LDA).id).halfheight
+
+
+				Endif
+		Next LDA
+	
+	For LDA=1 to FPA_playground2spritenumbers
+				If fpa_spriteimage(FPA_playgroundlayer2(LDA).ID).id=FPA_nopicture.id
+					FPA_playgroundlayer2(LDA).width = FPA_nopicture.width
+					FPA_playgroundlayer2(LDA).height = FPA_nopicture.height
+					FPA_playgroundlayer2(LDA).middlewidth = FPA_nopicture.halfwidth
+					FPA_playgroundlayer2(LDA).middleheight = FPA_nopicture.halfheight
+				Else
+					FPA_Playgroundlayer2(LDA).width = FPA_Spriteimage(FPA_Playgroundlayer2(LDA).id).width
+					FPA_Playgroundlayer2(LDA).height = FPA_Spriteimage(FPA_Playgroundlayer2(LDA).id).height
+					FPA_Playgroundlayer2(LDA).middlewidth = FPA_Spriteimage(FPA_Playgroundlayer2(LDA).id).halfwidth
+					FPA_Playgroundlayer2(LDA).middleheight = FPA_Spriteimage(FPA_Playgroundlayer2(LDA).id).halfheight
+
+
+				Endif
+		Next LDA
+	
+	
+	For LDA=1 to FPA_foregroundspritenumbers
+				If fpa_spriteimage(FPA_foregroundlayer(LDA).ID).id=FPA_nopicture.id
+					FPA_foregroundlayer(LDA).width = FPA_nopicture.width
+					FPA_foregroundlayer(LDA).height = FPA_nopicture.height
+					FPA_foregroundlayer(LDA).middlewidth = FPA_nopicture.halfwidth
+					FPA_foregroundlayer(LDA).middleheight = FPA_nopicture.halfheight
+				Else
+					FPA_Foregroundlayer(LDA).width = FPA_Spriteimage(FPA_Foregroundlayer(LDA).id).width
+					FPA_Foregroundlayer(LDA).height = FPA_Spriteimage(FPA_Foregroundlayer(LDA).id).height
+					FPA_Foregroundlayer(LDA).middlewidth = FPA_Spriteimage(FPA_Foregroundlayer(LDA).id).halfwidth
+					FPA_Foregroundlayer(LDA).middleheight = FPA_Spriteimage(FPA_Foregroundlayer(LDA).id).halfheight
+				Endif
+
+
+		Next LDA
+	Endif
+Endfunction
+
+
+Function FPA_showmouseoveredsprite()
+
+Endfunction
+
+
+Function FPA_RGBA(r,g,b,a)
+Local Color As Dword
+	color = b + (g<<8) + (r<<16) + (a<<24)
+Endfunction color

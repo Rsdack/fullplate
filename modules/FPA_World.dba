@@ -24,7 +24,8 @@ Rem ***** Included Source File *****
 Global FPA_WORLDOFFSETX as Integer
 Global FPA_WORLDOFFSETY as Integer
 Global FPA_ACTUALLEVEL$ as String
-
+global fpa_rainimage as integer `dxs imagepointer for the rain sprite
+global fpa_rainframe as integer
 `===========================`
 
 `===========Types===========`
@@ -58,7 +59,45 @@ local var_string$ as string
 	Endif
 Endfunction
 
+
+
+
+
 Function FPA_RESETWORLDOFFSET()
 	FPA_WORLDOFFSETX=0
 	FPA_WORLDOFFSETY=0
+Endfunction
+
+
+Function FPA_setupraineffect()
+	fpa_rainimage=DXS CREATE SPRITE("data\spriteanim\decal.png")
+	DXS SET SPRITE TILE SIZE fpa_rainimage,256,256
+Endfunction
+
+Function Fpa_Updaterain()
+fpa_rainframe=fpa_rainframe+1
+If fpa_rainframe>16 then fpa_rainframe=1
+Endfunction
+
+
+Function Fpa_renderbackdroprain()
+  DXS BEGIN SPRITE RENDER fpa_rainimage
+	        DXS DRAW SPRITE TILE fpa_rainimage,fpa_rainframe,0,0
+	        DXS DRAW SPRITE TILE fpa_rainimage,fpa_rainframe,256,0
+	        DXS DRAW SPRITE TILE fpa_rainimage,fpa_rainframe,512,0
+			DXS DRAW SPRITE TILE fpa_rainimage,fpa_rainframe,0,256
+	        DXS DRAW SPRITE TILE fpa_rainimage,fpa_rainframe,256,256
+	        DXS DRAW SPRITE TILE fpa_rainimage,fpa_rainframe,512,256
+  DXS END SPRITE RENDER fpa_rainimage
+Endfunction
+
+Function Fpa_renderforegroundrain()
+  DXS BEGIN SPRITE RENDER fpa_rainimage
+	        DXS DRAW SPRITE TILE fpa_rainimage,fpa_rainframe,-50,-20
+	        DXS DRAW SPRITE TILE fpa_rainimage,fpa_rainframe,206,-20
+	        DXS DRAW SPRITE TILE fpa_rainimage,fpa_rainframe,462,-20
+			DXS DRAW SPRITE TILE fpa_rainimage,fpa_rainframe,-50,236
+	        DXS DRAW SPRITE TILE fpa_rainimage,fpa_rainframe,206,236
+	        DXS DRAW SPRITE TILE fpa_rainimage,fpa_rainframe,462,236
+  DXS END SPRITE RENDER fpa_rainimage
 Endfunction

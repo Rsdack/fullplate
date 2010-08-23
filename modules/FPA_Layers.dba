@@ -38,11 +38,12 @@ Global FPA_hiddenplay as boolean
 Global FPA_hiddenplay2 as boolean
 Global FPA_hiddenfore as boolean
 Global FPA_hiddennodes as boolean
-
+Global FPA_hiddenhelpers as boolean
 
 
 
 Global selectedsprite as integer
+Global mouseoveredsprite as integer
 `===========================`
 
 `===========Types===========`
@@ -63,6 +64,16 @@ Endtype
 `=========Functions=========`
 //---setup layer arrays
 Function FPA_SetupLayers()
+//***************************************************************************************
+//*                                                                                     *
+//*   Miso:                                                                             *
+//*                                                                                     *
+//*    Set up the basic layer data.                                                     *
+//*                                                                                     *
+//*                                                                                     *
+//*                                                                                     *
+//***************************************************************************************	
+
 	//Setup layer arrays, if not yet
 	If FPA_Layerscreated = 0	
 		dim FPA_Staticlayer(0) as mylayertype
@@ -151,6 +162,16 @@ Function FPA_AddspriteToLayer(param_layer,param_id,param_x,param_y)
 Endfunction
 
 Function FPA_selectspritefromplaygroundlayer()
+//***************************************************************************************
+//*                                                                                     *
+//*   Miso:                                                                             *
+//*                                                                                     *
+//*     Selects a sprite from the playground layer. (watches mouseover)                 *
+//*                                                                                     *
+//*                                                                                     *
+//*                                                                                     *
+//***************************************************************************************	
+
 If FPA_Event_Leftmouseclick=1 and FPA_Event_leftmousereleased=1
 selectedsprite=0
 FPA_selectedvector=0
@@ -166,6 +187,16 @@ Endif
 Endfunction
 
 Function FPA_selectspritefromactuallayer()
+//***************************************************************************************
+//*                                                                                     *
+//*   Miso:                                                                             *
+//*                                                                                     *
+//*     Selects a sprite from the actual layer.                                         *
+//*                                                                                     *
+//*                                                                                     *
+//*                                                                                     *
+//***************************************************************************************	
+
 If FPA_Event_Leftmouseclick=1 and FPA_Event_leftmousereleased=1
 	selectedsprite=0
 	FPA_Event_leftmousereleased=0
@@ -249,6 +280,16 @@ Endfunction
 
 
 Function FPA_DRAWSTATICLAYER()
+//***************************************************************************************
+//*                                                                                     *
+//*   Miso:                                                                             *
+//*                                                                                     *
+//*     Draws the static layer.                                                         *
+//*                                                                                     *
+//*                                                                                     *
+//*                                                                                     *
+//***************************************************************************************	
+
 	If FPA_layerscreated = 1
 		If fpa_hiddenstatic=0
 			If FPA_staticspritenumbers>0
@@ -263,6 +304,16 @@ Function FPA_DRAWSTATICLAYER()
 Endfunction
 
 Function FPA_DRAWPLAYGROUNDLAYER()
+//***************************************************************************************
+//*                                                                                     *
+//*   Miso:                                                                             *
+//*                                                                                     *
+//*     Draws the playground layer.                                                     *
+//*                                                                                     *
+//*                                                                                     *
+//*                                                                                     *
+//***************************************************************************************	
+
 	If FPA_layerscreated = 1
 		If FPA_hiddenplay=0
 			If FPA_Playgroundspritenumbers>0
@@ -277,6 +328,16 @@ Function FPA_DRAWPLAYGROUNDLAYER()
 Endfunction
 
 Function FPA_DRAWPLAYGROUNDLAYER2()
+//***************************************************************************************
+//*                                                                                     *
+//*   Miso:                                                                             *
+//*                                                                                     *
+//*    Draws the second playground layer.                                               *
+//*                                                                                     *
+//*                                                                                     *
+//*                                                                                     *
+//***************************************************************************************	
+
 	If FPA_layerscreated = 1
 		If FPA_hiddenplay2=0
 			If FPA_Playground2spritenumbers>0
@@ -292,6 +353,15 @@ Endfunction
 
 
 Function FPA_DRAWbackGROUNDLAYER()
+//***************************************************************************************
+//*                                                                                     *
+//*   Miso:                                                                             *
+//*                                                                                     *
+//*     Draws the background layer.                                                     *
+//*                                                                                     *
+//*                                                                                     *
+//*                                                                                     *
+//***************************************************************************************	
 	If FPA_layerscreated = 1
 		If FPA_Hiddenback=0
 			If FPA_backgroundspritenumbers>0
@@ -306,6 +376,15 @@ Function FPA_DRAWbackGROUNDLAYER()
 Endfunction
 
 Function FPA_DRAWforeGROUNDLAYER()
+//***************************************************************************************
+//*                                                                                     *
+//*   Miso:                                                                             *
+//*                                                                                     *
+//*      Draws the foreground layer.                                                    *
+//*                                                                                     *
+//*                                                                                     *
+//*                                                                                     *
+//***************************************************************************************	
 	If FPA_layerscreated = 1
 		If FPA_hiddenfore=0
 			If FPA_foregroundspritenumbers>0
@@ -322,6 +401,15 @@ Endfunction
 
 //---reset all layer data (mostly before loading a new level)
 Function FPA_RESETALLLAYERS()
+//***************************************************************************************
+//*                                                                                     *
+//*   Miso:                                                                             *
+//*                                                                                     *
+//*     Reset all layers.                                                               *
+//*                                                                                     *
+//*                                                                                     *
+//*                                                                                     *
+//***************************************************************************************	
 	If FPA_Layerscreated = 1	
 		//--Destroy all layer array
 		undim FPA_Staticlayer()
@@ -348,6 +436,15 @@ Function FPA_RESETALLLAYERS()
 Endfunction
 
 Function FPA_Savelayers()
+//***************************************************************************************
+//*                                                                                     *
+//*   Miso:                                                                             *
+//*                                                                                     *
+//*      Saves all layers.                                                              *
+//*                                                                                     *
+//*                                                                                     *
+//*                                                                                     *
+//***************************************************************************************	
 local var_fileid as integer
 local LDA as integer
 
@@ -433,10 +530,19 @@ local LDA as integer
 
 	       		freeresource(var_fileid,res_file)
 	       		//--save the vectors too
-	       		FPA_savevectors()
 Endfunction
 
 Function FPA_Loadlayers()
+//***************************************************************************************
+//*                                                                                     *
+//*   Miso:                                                                             *
+//*                                                                                     *
+//*     Load all layers.                                                                *
+//*                                                                                     *
+//*                                                                                     *
+//*                                                                                     *
+//***************************************************************************************	
+
 local var_fileid as integer
 var_fileid=grabresource(res_file)
 
@@ -567,4 +673,139 @@ fpa_resetalllayers()
 freeresource(var_fileid,res_file)
 //--finally load the vector objects
 FPA_Loadvectors()
+Endfunction
+
+
+Function FPA_AddSpriteToCurrentLayer()
+	If FPA_SelectedSpriteImage>0
+		if fpa_currentlayer=layer_static
+			FPA_AddspriteToLayer(FPA_currentlayer,FPA_SelectedSpriteImage,mousex()+FPA_Spriteimage(FPA_SELECTEDSPRITEIMAGE).halfwidth/2,mousey()+FPA_Spriteimage(FPA_SELECTEDSPRITEIMAGE).halfheight/2)
+		Endif
+		if fpa_currentlayer=layer_playground or fpa_currentlayer=layer_playground2
+			FPA_AddspriteToLayer(FPA_currentlayer,FPA_SelectedSpriteImage,(-1*FPA_worldoffsetx+mousex()+FPA_Spriteimage(FPA_SELECTEDSPRITEIMAGE).halfwidth/2),(-1*FPA_worldoffsety)+mousey()+FPA_Spriteimage(FPA_SELECTEDSPRITEIMAGE).halfheight/2)
+		Endif
+		
+		if fpa_currentlayer=layer_background
+			FPA_AddspriteToLayer(FPA_currentlayer,FPA_SelectedSpriteImage,(floor(-1*FPA_worldoffsetx*background_parallax_speed)+mousex()+FPA_Spriteimage(FPA_SELECTEDSPRITEIMAGE).halfwidth/2),(floor(-1*FPA_worldoffsety*background_parallax_speed))+mousey()+FPA_Spriteimage(FPA_SELECTEDSPRITEIMAGE).halfheight/2)
+		Endif
+	
+		if fpa_currentlayer=layer_foreground
+			FPA_AddspriteToLayer(FPA_currentlayer,FPA_SelectedSpriteImage,(floor(-1*FPA_worldoffsetx*foreground_parallax_speed)+mousex()+FPA_Spriteimage(FPA_SELECTEDSPRITEIMAGE).halfwidth/2),(floor(-1*FPA_worldoffsety*foreground_parallax_speed))+mousey()+FPA_Spriteimage(FPA_SELECTEDSPRITEIMAGE).halfheight/2)
+		Endif
+	Endif
+Endfunction
+
+
+
+
+Function FPA_selectmouseoverspritefromactuallayer()
+//***************************************************************************************
+//*                                                                                     *
+//*   Miso:                                                                             *
+//*                                                                                     *
+//*     Selects a sprite from the actual layer.                                         *
+//*                                                                                     *
+//*                                                                                     *
+//*                                                                                     *
+//***************************************************************************************	
+
+If FPA_hiddenhelpers=0
+	if mouseclick()<>1 then mouseoveredsprite=0
+
+	//--static
+	if fpa_currentlayer=layer_static
+		If FPA_hiddenstatic=0
+			for LDA=1 to FPA_staticspritenumbers
+				If mousex()>FPA_staticlayer(LDA).X and mousex()<FPA_staticlayer(LDA).X+FPA_staticlayer(LDA).width
+					If mousey()>FPA_staticlayer(LDA).Y and mouseY()<FPA_staticlayer(LDA).Y+FPA_staticlayer(LDA).height
+						If mouseclick()<>1
+							mouseoveredsprite=LDA
+							d3d_ellipse fpa_staticlayer(LDA).X+fpa_staticlayer(LDA).middlewidth,fpa_staticlayer(LDA).Y+fpa_staticlayer(LDA).middleheight,fpa_staticlayer(LDA).middlewidth,FPA_staticlayer(LDA).middleheight,0
+						Endif
+					Endif
+				Endif
+			Next LDA
+			if mouseoveredsprite>0 then d3d_ellipse fpa_staticlayer(mouseoveredsprite).X+fpa_staticlayer(mouseoveredsprite).middlewidth,fpa_staticlayer(mouseoveredsprite).Y+fpa_staticlayer(mouseoveredsprite).middleheight,fpa_staticlayer(mouseoveredsprite).middlewidth,FPA_staticlayer(mouseoveredsprite).middleheight,0,rgb(255,0,0)
+		Endif
+	Endif
+
+
+	//--background parallax
+	if fpa_currentlayer=layer_background
+		If FPA_hiddenback=0
+			for LDA=1 to FPA_backgroundspritenumbers
+				If mousex()>FPA_backgroundlayer(LDA).X+floor(FPA_worldoffsetx*background_parallax_speed) and mousex()<FPA_backgroundlayer(LDA).X+floor(FPA_worldoffsetx*background_parallax_speed)+FPA_backgroundlayer(LDA).width
+					If mousey()>FPA_backgroundlayer(LDA).Y+floor(FPA_worldoffsetY*background_parallax_speed) and mouseY()<FPA_backgroundlayer(LDA).Y+floor(FPA_worldoffsetY*background_parallax_speed)+FPA_backgroundlayer(LDA).height
+					If Mouseclick()<>1
+					  mouseoveredsprite=LDA
+					  d3d_ellipse fpa_backgroundlayer(LDA).X+fpa_backgroundlayer(LDA).middlewidth+floor(FPA_worldoffsetx*background_parallax_speed),fpa_backgroundlayer(LDA).Y+floor(FPA_worldoffsety*background_parallax_speed)+fpa_backgroundlayer(LDA).middleheight,fpa_backgroundlayer(LDA).middlewidth,FPA_backgroundlayer(LDA).middleheight,0
+					Endif
+					Endif
+				Endif
+			Next LDA
+			if mouseoveredsprite>0 then d3d_ellipse fpa_backgroundlayer(mouseoveredsprite).X+fpa_backgroundlayer(mouseoveredsprite).middlewidth+floor(FPA_worldoffsetx*background_parallax_speed),fpa_backgroundlayer(mouseoveredsprite).Y+floor(FPA_worldoffsety*background_parallax_speed)+fpa_backgroundlayer(mouseoveredsprite).middleheight,fpa_backgroundlayer(mouseoveredsprite).middlewidth,FPA_backgroundlayer(mouseoveredsprite).middleheight,0,rgb(255,0,0)
+		Endif
+	Endif
+
+	
+	
+	//--playground
+	if fpa_currentlayer=layer_playground
+		If FPA_hiddenplay=0	
+			for LDA=1 to FPA_playgroundspritenumbers
+				If mousex()>FPA_playgroundlayer(LDA).X+FPA_worldoffsetx and mousex()<FPA_playgroundlayer(LDA).X+FPA_worldoffsetx+FPA_playgroundlayer(LDA).width
+					If mousey()>FPA_playgroundlayer(LDA).Y+FPA_worldoffsetY and mouseY()<FPA_playgroundlayer(LDA).Y+FPA_worldoffsetY+FPA_playgroundlayer(LDA).height
+						If mouseclick()<>1
+							mouseoveredsprite=LDA
+							d3d_ellipse fpa_playgroundlayer(LDA).X+fpa_playgroundlayer(LDA).middlewidth+floor(FPA_worldoffsetx),fpa_playgroundlayer(LDA).Y+floor(FPA_worldoffsety)+fpa_playgroundlayer(LDA).middleheight,fpa_playgroundlayer(LDA).middlewidth,FPA_playgroundlayer(LDA).middleheight,0
+						Endif
+					Endif
+				Endif
+			Next LDA
+			If mouseoveredsprite>0 then d3d_ellipse fpa_playgroundlayer(mouseoveredsprite).X+fpa_playgroundlayer(mouseoveredsprite).middlewidth+floor(FPA_worldoffsetx),fpa_playgroundlayer(mouseoveredsprite).Y+floor(FPA_worldoffsety)+fpa_playgroundlayer(mouseoveredsprite).middleheight,fpa_playgroundlayer(mouseoveredsprite).middlewidth,FPA_playgroundlayer(mouseoveredsprite).middleheight,0,rgb(255,0,0)
+		Endif
+	Endif
+
+	//--VECTOR SPRITES
+	FPA_Selectvectorpoint()
+
+	//--playground2
+	if fpa_currentlayer=layer_playground2
+		If FPA_hiddenplay2=0
+			for LDA=1 to FPA_playground2spritenumbers
+				If mousex()>FPA_playgroundlayer2(LDA).X+FPA_worldoffsetx and mousex()<FPA_playgroundlayer2(LDA).X+FPA_worldoffsetx+FPA_playgroundlayer2(LDA).width
+					If mousey()>FPA_playgroundlayer2(LDA).Y+FPA_worldoffsetY and mouseY()<FPA_playgroundlayer2(LDA).Y+FPA_worldoffsetY+FPA_playgroundlayer2(LDA).height
+					  if mouseclick()<>1
+					  	mouseoveredsprite=LDA
+					  	d3d_ellipse fpa_playgroundlayer2(LDA).X+fpa_playgroundlayer2(LDA).middlewidth+floor(FPA_worldoffsetx),fpa_playgroundlayer2(LDA).Y+floor(FPA_worldoffsety)+fpa_playgroundlayer2(LDA).middleheight,fpa_playgroundlayer2(LDA).middlewidth,FPA_playgroundlayer2(LDA).middleheight,0
+					  Endif
+					Endif
+				Endif
+			Next LDA
+			if mouseoveredsprite>0 then d3d_ellipse fpa_playgroundlayer2(mouseoveredsprite).X+fpa_playgroundlayer2(mouseoveredsprite).middlewidth+floor(FPA_worldoffsetx),fpa_playgroundlayer2(mouseoveredsprite).Y+floor(FPA_worldoffsety)+fpa_playgroundlayer2(mouseoveredsprite).middleheight,fpa_playgroundlayer2(mouseoveredsprite).middlewidth,FPA_playgroundlayer2(mouseoveredsprite).middleheight,0,rgb(255,0,0)
+		Endif
+	Endif
+
+//--foreground parallax
+	if fpa_currentlayer=layer_foreground
+		If FPA_hiddenfore=0
+			for LDA=1 to FPA_foregroundspritenumbers
+				If mousex()>FPA_foregroundlayer(LDA).X+floor(FPA_worldoffsetx*foreground_parallax_speed) and mousex()<FPA_foregroundlayer(LDA).X+floor(FPA_worldoffsetx*foreground_parallax_speed)+FPA_foregroundlayer(LDA).width
+					If mousey()>FPA_foregroundlayer(LDA).Y+floor(FPA_worldoffsetY*foreground_parallax_speed) and mouseY()<FPA_foregroundlayer(LDA).Y+floor(FPA_worldoffsetY*foreground_parallax_speed)+FPA_foregroundlayer(LDA).height
+					  if mouseclick()<>1
+					  	mouseoveredsprite=LDA
+  					  	d3d_ellipse fpa_foregroundlayer(LDA).X+fpa_foregroundlayer(LDA).middlewidth+floor(FPA_worldoffsetx*foreground_parallax_speed),fpa_foregroundlayer(LDA).Y+floor(FPA_worldoffsety*foreground_parallax_speed)+fpa_foregroundlayer(LDA).middleheight,fpa_foregroundlayer(LDA).middlewidth,FPA_foregroundlayer(LDA).middleheight,0
+  					  Endif
+					Endif
+				Endif
+			Next LDA
+			if mouseoveredsprite>0 then d3d_ellipse fpa_foregroundlayer(mouseoveredsprite).X+fpa_foregroundlayer(mouseoveredsprite).middlewidth+floor(FPA_worldoffsetx*foreground_parallax_speed),fpa_foregroundlayer(mouseoveredsprite).Y+floor(FPA_worldoffsety*foreground_parallax_speed)+fpa_foregroundlayer(mouseoveredsprite).middleheight,fpa_foregroundlayer(mouseoveredsprite).middlewidth,FPA_foregroundlayer(mouseoveredsprite).middleheight,0,rgb(255,28,28)
+				
+		Endif
+	Endif
+
+
+
+
+Endif
 Endfunction

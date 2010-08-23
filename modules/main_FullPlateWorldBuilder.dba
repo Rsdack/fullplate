@@ -11,9 +11,11 @@
 `USES Advanced Sprites,Box2D, Ian's matrix1, BlueGui,TitanEngine.
 
 `=========Constants=========`
+
 `===========================`
 
 `==========Globals==========`
+
 `===========================`
 
 `===========Types===========`
@@ -24,10 +26,11 @@
 FPA_StartWorldBuilder()
 //--for mouseclickstart
 FPA_EVENT_leftmousereleased=1
-
+fpa_doaspriteconversion()
+rem fpa_setupraineffect()
 Do
 FPA_Setinternalmousevariables()
-
+rem fpa_updaterain()
 	SyS_Handlegadgets()
 	FPA_RunWorldBuilder()
 
@@ -36,10 +39,14 @@ SyS_Text(1,0,15,"sprites drawed="+str$(FPA_staticspritenumbers+FPA_Backgroundspr
 SyS_Text(1,0,30,"OFFSET_X="+str$(FPA_worldoffsetx))
 SyS_Text(1,0,45,"OFFSET_Y="+str$(FPA_worldoffsety))
 
-
+fpa_selectmouseoverspritefromactuallayer()
 				
 	SyS_Handlemouse()
 	
+
+if fpa_kg then SyS_Text(1,0,145,"pressed g")
+if fpa_leftshift then SyS_Text(1,0,145,"pressed left shift")
+if fpa_rightshift then SyS_Text(1,0,145,"pressed right shift")
 
 
 //--testing d3d draw
@@ -50,21 +57,22 @@ Endif
 SyS_Synchandle()
 // testing add sprite
 if spacekey()=1
-	if fpa_currentlayer=layer_static
-		FPA_AddspriteToLayer(FPA_currentlayer,9,mousex(),mousey())
-	Endif
-	if fpa_currentlayer=layer_playground or fpa_currentlayer=layer_playground2
-		FPA_AddspriteToLayer(FPA_currentlayer,9,(-1*FPA_worldoffsetx+mousex()),(-1*FPA_worldoffsety)+mousey())
-	Endif
+	If FPA_SelectedSpriteImage>0
+		if fpa_currentlayer=layer_static
+			FPA_AddspriteToLayer(FPA_currentlayer,FPA_SelectedSpriteImage,mousex(),mousey())
+		Endif
+		if fpa_currentlayer=layer_playground or fpa_currentlayer=layer_playground2
+			FPA_AddspriteToLayer(FPA_currentlayer,FPA_SelectedSpriteImage,(-1*FPA_worldoffsetx+mousex()),(-1*FPA_worldoffsety)+mousey())
+		Endif
+		
+		if fpa_currentlayer=layer_background
+			FPA_AddspriteToLayer(FPA_currentlayer,FPA_SelectedSpriteImage,(floor(-1*FPA_worldoffsetx*background_parallax_speed)+mousex()),(floor(-1*FPA_worldoffsety*background_parallax_speed))+mousey())
+		Endif
 	
-	if fpa_currentlayer=layer_background
-		FPA_AddspriteToLayer(FPA_currentlayer,9,(floor(-1*FPA_worldoffsetx*background_parallax_speed)+mousex()),(floor(-1*FPA_worldoffsety*background_parallax_speed))+mousey())
+		if fpa_currentlayer=layer_foreground
+			FPA_AddspriteToLayer(FPA_currentlayer,FPA_SelectedSpriteImage,(floor(-1*FPA_worldoffsetx*foreground_parallax_speed)+mousex()),(floor(-1*FPA_worldoffsety*foreground_parallax_speed))+mousey())
+		Endif
 	Endif
-	
-	if fpa_currentlayer=layer_foreground
-		FPA_AddspriteToLayer(FPA_currentlayer,9,(floor(-1*FPA_worldoffsetx*foreground_parallax_speed)+mousex()),(floor(-1*FPA_worldoffsety*foreground_parallax_speed))+mousey())
-	Endif
-	
 	
 	Repeat
 	sync

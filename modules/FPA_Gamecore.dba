@@ -1,4 +1,3 @@
-Rem ***** Included Source File *****
 
 
 
@@ -47,8 +46,8 @@ Function FPA_StartGAME()
 	FPA_CreateSpriteImagetable()
 	FPA_Setuplayers()
 	FPA_Setupvectorworld()
-	//---Start BlueGui
-        StartBlue "XXX","XXXXXX"
+	//---Start BlueGui (YOU HAVE TO REPLACE CONSTANTS TO YOUR BLUEGUI USER AND PASS)
+        StartBlue GUIUSER,GUIPASS
 	//---Init D3D
 	d3d_init
 	//---Init Box2D
@@ -76,7 +75,7 @@ Function FPA_RunGAME()
 	rem here will be between these two tha player and phy objects
 	FPA_DRAWPLAYGROUNDLAYER2()
 	FPA_DRAWforegroundlayer()
-	FPA_Drawvectors()
+	rem FPA_Drawvectors()
 	//--writes some info on screen
 	IF FPA_actuallevel$=""
 	Else
