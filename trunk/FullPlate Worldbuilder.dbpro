@@ -5,7 +5,7 @@ project name=FullPlate Adventures
 
 ; **** source file information ****
 main=modules\main_FullPlateWorldBuilder.dba
-LineMain=13
+LineMain=0
 include1=TitanEngine\SyS_Core.dba
 LineInclude1=6
 include2=TitanEngine\SyS_Debug.dba
@@ -23,7 +23,7 @@ LineInclude7=0
 include8=TitanEngine\SyS_Resource.dba
 LineInclude8=141
 include9=TitanEngine\SyS_Windows.dba
-LineInclude9=2
+LineInclude9=43
 include10=TitanEngine\SyS_Blank.dba
 LineInclude10=30
 include11=TitanEngine\SyS_BlueGui.dba
@@ -31,25 +31,27 @@ LineInclude11=21
 include12=TitanEngine\SyS_BlueGuiConstants.dba
 LineInclude12=9
 include13=modules\FPA_Core.dba
-LineInclude13=77
+LineInclude13=106
 include14=modules\FPA_World.dba
 LineInclude14=72
 include15=modules\FPA_BGUI.dba
-LineInclude15=492
+LineInclude15=519
 include16=modules\FPA_SpriteImages.dba
-LineInclude16=278
+LineInclude16=163
 include17=modules\FPA_Debug.dba
 LineInclude17=0
 include18=modules\FPA_Layers.dba
-LineInclude18=0
+LineInclude18=12
 include19=modules\FPA_Events.dba
-LineInclude19=118
+LineInclude19=138
 include20=modules\FPA_Vectors.dba
-LineInclude20=179
+LineInclude20=220
 include21=modules\FPA_Controls.dba
-LineInclude21=108
+LineInclude21=61
 include22=modules\SYS_BGUI_USERID.dba
 LineInclude22=25
+include23=modules\FPA_2DMath.dba
+LineInclude23=0
 
 ; **** Executable Information  ***
 ; build types: exe, media, installer, alone

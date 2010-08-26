@@ -28,6 +28,9 @@ FPA_StartWorldBuilder()
 FPA_EVENT_leftmousereleased=1
 fpa_doaspriteconversion()
 rem fpa_setupraineffect()
+//--disable escapekey
+disable escapekey
+
 Do
 FPA_Setinternalmousevariables()
 rem fpa_updaterain()
@@ -38,6 +41,8 @@ SyS_Text(1,0,0,"sprites loaded="+str$(FPA_LoadedSpriteImages))
 SyS_Text(1,0,15,"sprites drawed="+str$(FPA_staticspritenumbers+FPA_Backgroundspritenumbers+FPA_playgroundspritenumbers+FPA_Foregroundspritenumbers))
 SyS_Text(1,0,30,"OFFSET_X="+str$(FPA_worldoffsetx))
 SyS_Text(1,0,45,"OFFSET_Y="+str$(FPA_worldoffsety))
+
+
 
 fpa_selectmouseoverspritefromactuallayer()
 				
@@ -55,28 +60,5 @@ d3d_line 10,10,300,300
 Endif
 
 SyS_Synchandle()
-// testing add sprite
-if spacekey()=1
-	If FPA_SelectedSpriteImage>0
-		if fpa_currentlayer=layer_static
-			FPA_AddspriteToLayer(FPA_currentlayer,FPA_SelectedSpriteImage,mousex(),mousey())
-		Endif
-		if fpa_currentlayer=layer_playground or fpa_currentlayer=layer_playground2
-			FPA_AddspriteToLayer(FPA_currentlayer,FPA_SelectedSpriteImage,(-1*FPA_worldoffsetx+mousex()),(-1*FPA_worldoffsety)+mousey())
-		Endif
-		
-		if fpa_currentlayer=layer_background
-			FPA_AddspriteToLayer(FPA_currentlayer,FPA_SelectedSpriteImage,(floor(-1*FPA_worldoffsetx*background_parallax_speed)+mousex()),(floor(-1*FPA_worldoffsety*background_parallax_speed))+mousey())
-		Endif
-	
-		if fpa_currentlayer=layer_foreground
-			FPA_AddspriteToLayer(FPA_currentlayer,FPA_SelectedSpriteImage,(floor(-1*FPA_worldoffsetx*foreground_parallax_speed)+mousex()),(floor(-1*FPA_worldoffsety*foreground_parallax_speed))+mousey())
-		Endif
-	Endif
-	
-	Repeat
-	sync
-	Until spacekey()=0
-Endif
 
 Loop

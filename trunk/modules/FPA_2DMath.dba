@@ -1,0 +1,72 @@
+
+
+
+
+
+
+
+//////////////////
+// ************** Included Source File ***************                             
+// FULLPLATE 2d math MODULE
+// 
+// Author: miso
+//
+//////////////////////////////////////////////////////
+
+`----- Changelog:
+`(2010/07/11) - miso     - Created
+`----- To-Do:
+
+`----- Purpose:
+
+`----- USES: none
+
+`----- Function List:
+
+`=========Constants=========`
+`===========================`
+
+`==========Globals==========`
+`===========================`
+
+`===========Types===========`
+`===========================`
+
+
+`=========Functions=========`
+
+Function FPA_FINDANGLE(fromx# as float,fromy# as float,tox# as float toy# as float)
+//***************************************************************************************
+//*   Miso                                                                              *
+//*     This function returns the angle of 2 points in a normal plane.  (2d)            *
+//*                                                                                     *
+//***************************************************************************************
+local var_angle# as float
+local var_XD# as float
+local var_YD# as float
+	var_XD#    = fromx#-tox#
+	var_YD#    = fromy#-toy#
+	var_Angle# = wrapvalue(180.0-ATANFULL(xd#,yd#))
+Endfunction var_angle#
+
+
+Function FPA_2dmovex(x# as float,angle# as float,speed# as float)
+//***************************************************************************************
+//*   Miso                                                                              *
+//*     This function returns newx coordinate of a movement based on angle and speed.   *
+//*                                                                                     *
+//***************************************************************************************
+local var_resultnewx# as float
+	var_resultnewx = x#+(speed#*cos(45+angle#)-speed#*sin(45+angle#))
+Endfunction var_resultnewx#
+
+
+Function FPA_2dmovey(y# as float,angle# as float,speed# as float)
+//***************************************************************************************
+//*   Miso                                                                              *
+//*     This function returns newy coordinate of movement based on angle and speed.     *
+//*                                                                                     *
+//***************************************************************************************
+local var_resultnewy# as float
+	var_resultnewy = y#+(speed#*cos(45+angle#)+speed#*sin(45+angle#))
+Endfunction var_resultnewy#

@@ -9,7 +9,7 @@ Rem ***** Included Source File *****
 
 `----- Changelog:
 `(2010/07/11) - miso     - Created
-
+`(2010/08/25) - added minor bugfix
 `=========Constants=========`
 `===========================`
 
@@ -144,29 +144,32 @@ Function FPA_replaceSpriteImage(Num,param_ImageFile$,param_name$)
 	FPA_CheckDxSprites()
 	FPA_CheckSpriteTable()
 	FPA_Checkfile(param_ImageFile$)
-	If fpa_spriteimage(num).ID<>FPA_nopicture.id
-		DXS DELETE SPRITE FPA_SpriteImage(num).ID
+	If selecteditem(bg_loadedsprites)>-1 and selecteditem(bg_availablesprites)>-1
+		If fpa_spriteimage(num).ID<>FPA_nopicture.id
+			DXS DELETE SPRITE FPA_SpriteImage(num).ID
+		Endif
+		FPA_SpriteImage(num).ID=DXS CREATE SPRITE(param_ImageFile$)
+		FPA_SpriteImage(num).Name=param_name$
+		FPA_SpriteImage(num).width=DXS GET SPRITE WIDTH(FPA_SpriteImage(num).ID)
+		FPA_SpriteImage(num).height=DXS GET SPRITE HEIGHT(FPA_SpriteImage(num).ID)
+		FPA_SpriteImage(num).halfwidth=DXS GET SPRITE WIDTH(FPA_SpriteImage(num).ID)/2
+		FPA_SpriteImage(num).halfheight=DXS GET SPRITE HEIGHT(FPA_SpriteImage(num).ID)/2
 	Endif
-	FPA_SpriteImage(num).ID=DXS CREATE SPRITE(param_ImageFile$)
-	FPA_SpriteImage(num).Name=param_name$
-	FPA_SpriteImage(num).width=DXS GET SPRITE WIDTH(FPA_SpriteImage(num).ID)
-	FPA_SpriteImage(num).height=DXS GET SPRITE HEIGHT(FPA_SpriteImage(num).ID)
-	FPA_SpriteImage(num).halfwidth=DXS GET SPRITE WIDTH(FPA_SpriteImage(num).ID)/2
-	FPA_SpriteImage(num).halfheight=DXS GET SPRITE HEIGHT(FPA_SpriteImage(num).ID)/2
-	
 
 Endfunction
 
 
 //---Delete a sprite image (crash program if image is in use)
 Function FPA_DeleteSpriteImage(Num)
-	DXS DELETE SPRITE FPA_SpriteImage(num).ID
-	FPA_SpriteImage(num).ID         = FPA_Nopicture.ID
-	FPA_SpriteImage(num).Name       = FPA_Nopicture.Name
-	FPA_SpriteImage(num).width      = FPA_Nopicture.width
-	FPA_SpriteImage(num).height     = FPA_Nopicture.height
-	FPA_SpriteImage(num).halfwidth  = FPA_Nopicture.halfwidth
-	FPA_SpriteImage(num).halfheight = FPA_Nopicture.halfheight
+	If selecteditem(bg_loadedsprites)>-1
+		DXS DELETE SPRITE FPA_SpriteImage(num).ID
+		FPA_SpriteImage(num).ID         = FPA_Nopicture.ID
+		FPA_SpriteImage(num).Name       = FPA_Nopicture.Name
+		FPA_SpriteImage(num).width      = FPA_Nopicture.width
+		FPA_SpriteImage(num).height     = FPA_Nopicture.height
+		FPA_SpriteImage(num).halfwidth  = FPA_Nopicture.halfwidth
+		FPA_SpriteImage(num).halfheight = FPA_Nopicture.halfheight
+	Endif
 Endfunction
 
 
