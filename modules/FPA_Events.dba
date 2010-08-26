@@ -29,6 +29,8 @@ Global FPA_Event_altkeypressed as boolean
 Global FPA_Event_vectorconnect as boolean
 Global FPA_Event_vectordisconnect as boolean
 Global FPA_Event_vectordelete as boolean
+Global FPA_Event_deletesprite as boolean
+
 
 `===========================`
 
@@ -39,6 +41,11 @@ Global FPA_Event_vectordelete as boolean
 `=========Functions=========`
 //---Checks the events independently
 FUNCTION FPA_GETEVENT()
+	//--if esc pressed then cancel current progress
+	if fpa_esc
+		FPA_Cancelevents()
+	Endif
+	
 	//--check mouseclick event
 	If mouseclick()=1 
 		fpa_event_leftmouseclick=1
@@ -48,12 +55,14 @@ FUNCTION FPA_GETEVENT()
 		fpa_selectedvector=0
 		selectedsprite=0
 	Endif
+	
 	//--check rightmouseclick event
 	If mouseclick()=2 
 		fpa_event_rightmouseclick=1
 	Else
 		fpa_event_rightmouseclick=0
 	Endif
+	
 	//--check if altkeypressed
 	If keystate(56)=1 
 		FPA_Event_altkeypressed=1
@@ -120,10 +129,20 @@ FUNCTION FPA_GETEVENT()
 			SyS_centertext(2,FPA_mousex,FPA_mousey+35,"X "+str$(FPA_foregroundlayer(selectedsprite).x))
 			SyS_centertext(2,FPA_mousex,FPA_mousey+50,"Y "+str$(FPA_foregroundlayer(selectedsprite).y))
 		Endif
-
-
 	
 	Endif
+
+		//--displays delete sprite event info
+		If FPA_event_deletesprite=1
+			SyS_centertext(2,FPA_mousex,FPA_mousey+20,"Choose a sprite to delete!")
+			If selectedsprite>0
+				FPA_Deletespritefromactuallayer(selectedsprite)
+			Endif
+		Endif
+	
+		If FPA_Event_vectordelete = 1
+			SyS_centertext(2,FPA_mousex,FPA_mousey+20,"Select vector node to delete!")			
+		Endif
 		
 ENDFUNCTION
 
@@ -143,4 +162,16 @@ Function FPA_Setinternalmousevariables()
 	
 	
 	
+Endfunction
+
+
+Function FPA_Cancelevents()
+
+
+		FPA_event_vectordelete=0
+		fpa_event_deletesprite=0
+		fpa_event_vectorconnect=0
+		fpa_event_vectordisconnect=0
+		fpa_connectvector1=0
+		fpa_connectvector2=0
 Endfunction

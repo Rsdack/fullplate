@@ -9,6 +9,7 @@ Rem ***** Included Source File *****
 
 `----- Changelog:
 `(2010/07/11) - miso     - Created
+`(2010/08/25) - added minor bugfix
 `----- To-Do:
 
 `----- Purpose:
@@ -504,9 +505,21 @@ local var_fileid as integer
 			    		FPA_AddSpriteToCurrentLayer()
 					Endif
 					
+					if result=FPA_EVENT_CHOOSEDELETESPRITE
+			    		FPA_Event_deletesprite=1
+					Endif
+					
 		    	Endif
 		    Endif
 		Endif
+		
+//---handle error sources
+	//--if no item selected in loaded sprites bluegui object, then select first element if available
+	If selecteditem(bg_loadedsprites)=-1 and fpa_loadedspriteimages>0 
+		selectitem bg_loadedsprites,0
+		Fpa_selectedspriteimage = 1
+	Endif
+		
 Endfunction
 
 
@@ -533,3 +546,8 @@ next t
 cd "..":cd ".."
 freeresource(imgid,res_file)	
 endfunction
+
+Function FPA_WARNNOSELECTEDSPRITE()
+	message "No selected sprite"
+Endfunction
+

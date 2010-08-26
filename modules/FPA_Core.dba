@@ -18,7 +18,7 @@ Rem ***** Included Source File *****
 `===========================`
 
 `==========Globals==========`
-Global World as integer
+Global World as integer :`box2d world ID
 `===========================`
 
 `===========Types===========`

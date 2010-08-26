@@ -5,7 +5,7 @@ project name=FullPlate Adventures
 
 ; **** source file information ****
 main=modules\main_FullPlate.dba
-LineMain=11
+LineMain=28
 include1=TitanEngine\SyS_Blank.dba
 LineInclude1=1
 include2=TitanEngine\SyS_BlueGui.dba
@@ -33,7 +33,7 @@ LineInclude12=1
 include13=modules\FPA_BGUI.dba
 LineInclude13=2
 include14=modules\FPA_Core.dba
-LineInclude14=48
+LineInclude14=55
 include15=modules\FPA_Debug.dba
 LineInclude15=1
 include16=modules\FPA_Events.dba
@@ -49,7 +49,7 @@ LineInclude20=31
 include21=modules\FPA_Box2D.dba
 LineInclude21=9
 include22=modules\FPA_Gamecore.dba
-LineInclude22=77
+LineInclude22=73
 include23=modules\FPA_Controls.dba
 LineInclude23=34
 include24=modules\SYS_BGUI_USERID.dba

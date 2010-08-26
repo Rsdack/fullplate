@@ -12,6 +12,7 @@ Rem ***** Included Source File *****
 
 `----- Changelog:
 `(2010/07/11) - miso     - Created
+`(2010/08/26) - miso     - Added comments
 `----- To-Do:
 
 `----- Purpose:
@@ -26,8 +27,8 @@ Rem ***** Included Source File *****
 
 `==========Globals==========`
 Global FPA_vectorscreated as boolean
-Global FPA_vectornumbers as integer
-Global FPA_Vectorsprite as myvectorspriteimagetype
+Global FPA_vectornumbers  as integer
+Global FPA_Vectorsprite   as myvectorspriteimagetype
 Global FPA_selectedvector as integer
 Global FPA_connectvector1 as integer
 Global FPA_connectvector2 as integer
@@ -35,10 +36,10 @@ Global FPA_connectvector2 as integer
 
 `===========Types===========`
 Type myVectorpointtype
-	X as integer
-	Y as integer
+	X      as integer
+	Y      as integer
 	Before as integer
-	After as integer
+	After  as integer
 EndType
 
 Type myvectorspriteimagetype
@@ -54,49 +55,74 @@ Endtype
 `=========Functions=========`
 //---Setting up basic vectors
 Function FPA_Setupvectorworld()
+//***************************************************************************************
+//*   Miso                                                                              *
+//*     Sets basic vector data for collision.                                           *
+//*                                                                                     *
+//***************************************************************************************
 	If FPA_vectorscreated=0
 		//--Load a sprite for the nodes
 		FPA_LoadVectorSprite("data\system\skull32_1.png")
 		dim FPA_vectors(0) as myvectorpointtype
-		Fpa_Vectorscreated=1
-		FPA_Vectornumbers=0
+		Fpa_Vectorscreated = 1
+		FPA_Vectornumbers  = 0
 	Endif
 Endfunction
 
 //---Destroy vector data
 Function FPA_Destroyvectorworld()
-	If FPA_Vectorscreated=1
+//***************************************************************************************
+//*   Miso                                                                              *
+//*     Destroys vector data.                                                           *
+//*                                                                                     *
+//***************************************************************************************
+	If FPA_Vectorscreated = 1
 		//--Delete node sprite
 		DXS DELETE SPRITE FPA_VectorSprite.ID
 		undim FPA_vectors()
-		Fpa_Vectorscreated=0
-		FPA_Vectornumbers=0
+		Fpa_Vectorscreated = 0
+		FPA_Vectornumbers  = 0
 	Endif
 Endfunction
 
 //--- Node Sprite loader
 Function FPA_LoadVectorSprite(param_imagefile$)
+//***************************************************************************************
+//*   Miso                                                                              *
+//*     Loads the sprite that will be our vector node.                                  *
+//*                                                                                     *
+//***************************************************************************************
 	FPA_checkfile(param_imagefile$)
-	FPA_vectorsprite.ID=DXS CREATE SPRITE(param_ImageFile$)
-	FPA_vectorsprite.width=DXS GET SPRITE WIDTH(FPA_vectorsprite.ID)
-	FPA_vectorsprite.height=DXS GET SPRITE HEIGHT(FPA_vectorsprite.ID)
-	FPA_vectorsprite.halfwidth=DXS GET SPRITE WIDTH(FPA_vectorsprite.ID)/2
-	FPA_vectorsprite.halfheight=DXS GET SPRITE HEIGHT(FPA_vectorsprite.ID)/2
+	FPA_vectorsprite.ID         = DXS CREATE SPRITE(param_ImageFile$)
+	FPA_vectorsprite.width      = DXS GET SPRITE WIDTH(FPA_vectorsprite.ID)
+	FPA_vectorsprite.height     = DXS GET SPRITE HEIGHT(FPA_vectorsprite.ID)
+	FPA_vectorsprite.halfwidth  = DXS GET SPRITE WIDTH(FPA_vectorsprite.ID)/2
+	FPA_vectorsprite.halfheight = DXS GET SPRITE HEIGHT(FPA_vectorsprite.ID)/2
 Endfunction
 
 
 //---Adds a new vectorpoint node
 Function FPA_Addvectorpoint(param_x,param_y)
+//***************************************************************************************
+//*   Miso                                                                              *
+//*     Adds a node to the vectorlayer.                                                 *
+//*                                                                                     *
+//***************************************************************************************
 	if FPA_Vectorscreated=1
 		array insert at bottom FPA_vectors()
-		FPA_vectornumbers=FPA_vectornumbers+1
-		FPA_Vectors(FPA_Vectornumbers).x=param_x
-		FPA_Vectors(FPA_Vectornumbers).y=param_y
+		FPA_vectornumbers = FPA_vectornumbers+1
+		FPA_Vectors(FPA_Vectornumbers).x = param_x
+		FPA_Vectors(FPA_Vectornumbers).y = param_y
 	Endif
 Endfunction
 
 //---Deletes a new vectorpoint node
 Function FPA_Deletevectorpoint(ID1)
+//***************************************************************************************
+//*   Miso                                                                              *
+//*     Deletes a vector node, disconnects it if connected to other nodes.              *
+//*                                                                                     *
+//***************************************************************************************
 local var_counter as integer
 	If FPA_Vectorscreated=1
 		//--Create Temp vector
@@ -104,30 +130,30 @@ local var_counter as integer
 			For LDA=1 to fpa_vectornumbers
 				//--Disconnect vector if exists
 				If LDA=ID1 
-					var_counter=1
+					var_counter = 1
 					fpa_Disconnectvectors(ID1)
 				Endif
 				//--Create a temp array of remaining vectors 
 				If LDA<>ID1
-					FPA_tempvectors(LDA-var_counter).X=FPA_vectors(LDA).X
-					FPA_tempvectors(LDA-var_counter).Y=FPA_vectors(LDA).Y
-					FPA_tempvectors(LDA-var_counter).before=FPA_vectors(LDA).before
-					FPA_tempvectors(LDA-var_counter).after=FPA_vectors(LDA).after
+					FPA_tempvectors(LDA-var_counter).X = FPA_vectors(LDA).X
+					FPA_tempvectors(LDA-var_counter).Y = FPA_vectors(LDA).Y
+					FPA_tempvectors(LDA-var_counter).before = FPA_vectors(LDA).before
+					FPA_tempvectors(LDA-var_counter).after = FPA_vectors(LDA).after
 				Endif
 			Next LDA
 			
 			// subsctract 1 from vectornumbers, if we found an id last time
-			fpa_vectornumbers=fpa_vectornumbers-var_counter
+			fpa_vectornumbers = fpa_vectornumbers-var_counter
 		
 			undim FPA_vectors()
 			Dim FPA_vectors(fpa_vectornumbers) as myvectorpointtype
 		
 			//--Redo the vectors array
 			For LDA=1 to fpa_vectornumbers
-					FPA_vectors(LDA).X=FPA_tempvectors(LDA).X
-					FPA_vectors(LDA).Y=FPA_tempvectors(LDA).Y
-					FPA_Vectors(LDA).before=0
-					FPA_vectors(LDA).after=0
+					FPA_vectors(LDA).X = FPA_tempvectors(LDA).X
+					FPA_vectors(LDA).Y = FPA_tempvectors(LDA).Y
+					FPA_Vectors(LDA).before = 0
+					FPA_vectors(LDA).after  = 0
 			Next LDA
 	Endif
 Endfunction
@@ -139,20 +165,35 @@ Endfunction
 
 //---Connects two vectorpoint node
 Function FPA_connectvectors(id1,id2)
-	fpa_vectors(id1).after=id2
-	fpa_vectors(id2).before=id1
+//***************************************************************************************
+//*   Miso                                                                              *
+//*     Connects 2 vector nodes for collision checks.                                   *
+//*                                                                                     *
+//***************************************************************************************
+	fpa_vectors(id1).after  = id2
+	fpa_vectors(id2).before = id1
 Endfunction
 
 //---Disconnects a Vectorpoint node from all joints
 Function FPA_disconnectvectors(ID1)
-	Fpa_vectors(fpa_vectors(id1).after).before=0
-	fpa_vectors(id1).after=0
-	Fpa_vectors(fpa_vectors(id1).before).after=0
-	fpa_vectors(id1).before=0
+//***************************************************************************************
+//*   Miso                                                                              *
+//*     Deletes a nodes all connections.                                                *
+//*                                                                                     *
+//***************************************************************************************
+	Fpa_vectors(fpa_vectors(id1).after).before = 0
+	fpa_vectors(id1).after = 0
+	Fpa_vectors(fpa_vectors(id1).before).after = 0
+	fpa_vectors(id1).before = 0
 Endfunction
 
 //---A function that draws the vector nodes to screen
 Function FPA_Drawvectors()
+//***************************************************************************************
+//*   Miso                                                                              *
+//*     Draws the vector nodes and vector lines for debug or edit.                      *
+//*                                                                                     *
+//***************************************************************************************
 	If FPA_hiddennodes=0:`S---hiddennodes
 		DXS BEGIN SPRITE RENDER FPA_VectorSprite.id
 			If FPA_Vectornumbers>0:`S---vectornums
@@ -169,9 +210,15 @@ Endfunction
 
 //---Selecting a vector pointnode
 Function FPA_Selectvectorpoint()
-	FPA_SelectedVector=0
-	If FPA_Hiddennodes=0
-		if fpa_currentlayer=layer_vectors
+//***************************************************************************************
+//*   Miso                                                                              *
+//*     Handles vector node selection.                                                  *
+//*                                                                                     *
+//***************************************************************************************
+	
+	If FPA_Hiddennodes = 0
+		if fpa_currentlayer=layer_vectors and FPA_Event_leftmousereleased=1
+			FPA_SelectedVector = 0
 			for LDA=1 to FPA_vectornumbers
 				If mousex()>FPA_vectors(LDA).X+FPA_worldoffsetx and mousex()<FPA_vectors(LDA).X+FPA_worldoffsetx+FPA_vectorsprite.width
 					If mousey()>FPA_vectors(LDA).Y+FPA_worldoffsetY and mouseY()<FPA_vectors(LDA).Y+FPA_worldoffsetY+FPA_vectorsprite.height
@@ -185,6 +232,11 @@ Endfunction
 
 //---Testfunction, creates and connects some nodes
 Function FPA_CreateTestvectors()
+//***************************************************************************************
+//*   Miso                                                                              *
+//*     Dummy function, creates a bunch of vectors for testing, its not in use.         *
+//*                                                                                     *
+//***************************************************************************************
 	If FPA_Vectorscreated=1
 		FPA_ADDVECTORpoint(10,10)
 		FPA_ADDVECTORpoint(100,100)
@@ -204,6 +256,11 @@ Endfunction
 
 //--save vectors to file
 Function FPA_SaveVectors()
+//***************************************************************************************
+//*   Miso                                                                              *
+//*     Save the vector data to file. Folder is defined by the preloaded map.           *
+//*                                                                                     *
+//***************************************************************************************
 local var_fileid as integer
 local LDA as integer
 	var_fileid=grabresource(res_file)
@@ -227,6 +284,11 @@ Endfunction
 
 //---vector loader from file
 Function FPA_Loadvectors()
+//***************************************************************************************
+//*   Miso                                                                              *
+//*     Loads vector data from file.                                                    *
+//*                                                                                     *
+//***************************************************************************************
 local var_fileid as integer
 var_fileid=grabresource(res_file)
 //---hmmm, this must be changed later just to remake the array, but got no time at the moment
@@ -253,6 +315,12 @@ Endfunction
 
 
 Function FPA_Buildvectorphysics()
+//***************************************************************************************
+//*   Miso                                                                              *
+//*     Builds collision data based on the current vector data. (box2d)                 *
+//*     Box2d Id's are not saved or remembered.                                         *
+//*                                                                                     *
+//***************************************************************************************
 	If FPA_vectorscreated=1
 		If FPA_vectornumbers>0
 			for LDA=1 to FPA_vectornumbers

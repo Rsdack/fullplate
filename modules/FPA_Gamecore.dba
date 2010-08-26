@@ -71,7 +71,7 @@ Function FPA_RunGAME()
 	FPA_DRAWSTATICLAYER()
 	FPA_Drawbackgroundlayer()
 	FPA_DRAWPLAYGROUNDLAYER()
-	b2drawworld world,0
+	b2drawworld world,1
 	rem here will be between these two tha player and phy objects
 	FPA_DRAWPLAYGROUNDLAYER2()
 	FPA_DRAWforegroundlayer()

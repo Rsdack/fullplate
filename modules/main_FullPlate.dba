@@ -26,16 +26,18 @@ FPA_Buildvectorphysics()
 dim cubes(150)
 centerx=320
 load image "data\sprites\crate.jpg",1
-for x=1 to 75
+for x=1 to 50
     ballShape2 = b2CreatepolygonShapeasbox(32,32)
-    cubes(x) = b2CreateBody(world, b2BodyType_Dynamic(), 100 + centerX, 100,0,0)
+    cubes(x) = b2CreateBody(world, b2BodyType_Dynamic(), 100 + rnd(100), 100+rnd(100),0,0)
     ballFixture2 = b2CreateFixture(Cubes(x), ballShape2, 1, 0.3, 0.1)
 	
 	b2SetBodyImage cubes(x), 1, 0.27
 next x
+JointId = b2CreateDistanceJoint(World,cubes(1),cubes(2),b2getbodypositionx(cubes(1)),b2getbodypositiony(cubes(1)),b2getbodypositionx(cubes(2))+50,b2getbodypositiony(cubes(2)),1)
+JointId2 = b2CreateDistanceJoint(World,cubes(2),cubes(3),b2getbodypositionx(cubes(2)),b2getbodypositiony(cubes(2)),b2getbodypositionx(cubes(3))+50,b2getbodypositiony(cubes(3)),1)
+JointId3 = b2CreateweldJoint(World,cubes(4),cubes(5),b2getbodypositionx(cubes(4)),b2getbodypositiony(cubes(4)))
 
 
- 
    groundBody = CreateStaticBox(centerX, screen height()-30000, -11111998, 38, 1)
  
 

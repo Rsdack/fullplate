@@ -9,6 +9,9 @@ Rem ***** Included Source File *****
 
 `----- Changelog:
 `(2010/07/11) - miso     - Created
+`(2010/08/25) - added minor bugfix
+`(2010/08/26) - added delete sprite functions
+
 `----- USES: 
 
 `=========Constants=========`
@@ -25,38 +28,36 @@ Rem ***** Included Source File *****
 `===========================`
 
 `==========Globals==========`
-Global FPA_CurrentLayer  as Integer
-Global FPA_Layerscreated as Boolean
-Global FPA_staticspritenumbers as Integer :`how many sprites are in static layers
-Global FPA_backgroundspritenumbers as Integer :`how many sprites are in static layers
-Global FPA_playgroundspritenumbers as Integer :`how many sprites are in static layers
-Global FPA_playground2spritenumbers as Integer:``how many sprites are in static layers
-Global FPA_foregroundspritenumbers as Integer :`how many sprites are in static layers
-Global FPA_hiddenstatic as boolean
-Global FPA_hiddenback as boolean
-Global FPA_hiddenplay as boolean
-Global FPA_hiddenplay2 as boolean
-Global FPA_hiddenfore as boolean
-Global FPA_hiddennodes as boolean
-Global FPA_hiddenhelpers as boolean
+Global FPA_CurrentLayer             as Integer
+Global FPA_Layerscreated            as Boolean
+Global FPA_staticspritenumbers      as Integer :`how many sprites are in static layers
+Global FPA_backgroundspritenumbers  as Integer :`
+Global FPA_playgroundspritenumbers  as Integer :`
+Global FPA_playground2spritenumbers as Integer :`
+Global FPA_foregroundspritenumbers  as Integer :`
+Global FPA_hiddenstatic             as boolean
+Global FPA_hiddenback               as boolean
+Global FPA_hiddenplay               as boolean
+Global FPA_hiddenplay2              as boolean
+Global FPA_hiddenfore               as boolean
+Global FPA_hiddennodes              as boolean
+Global FPA_hiddenhelpers            as boolean
 
-
-
-Global selectedsprite as integer
+Global selectedsprite    as integer
 Global mouseoveredsprite as integer
 `===========================`
 
 `===========Types===========`
 //---this holds data for layer sprites that has to be displayed
 Type Mylayertype
-	ID     as integer
-	X      as Integer
-	Y      as Integer
-	width  as integer
-	Height as integer
-	middlewidth as integer
+	ID           as integer
+	X            as Integer
+	Y            as Integer
+	width        as integer
+	Height       as integer
+	middlewidth  as integer
 	middleheight as integer
-	Angle  as Integer  :`disabled atm
+	Angle        as Integer  :`disabled atm
 Endtype
 `===========================`
 
@@ -277,7 +278,215 @@ If FPA_Event_Leftmouseclick=1 and FPA_Event_leftmousereleased=1
 Endif
 Endfunction
 
+function FPA_Deletespritefromactuallayer(param_ID)
+//***************************************************************************************
+//*                                                                                     *
+//*   Miso:                                                                             *
+//*                                                                                     *
+//*     Deletes a sprite.                                                               *
+//*                                                                                     *
+//***************************************************************************************	
 
+	If FPA_Layerscreated = 1
+		if fpa_currentlayer=layer_static
+			If param_ID>0 and param_ID<FPA_staticspritenumbers+1
+				dim tempsprites(FPA_staticspritenumbers-1) as mylayertype
+				LDX=0
+				For LDA=1 to FPA_staticspritenumbers
+					If LDA<>param_ID
+						LDX=LDX+1
+						tempsprites(LDX).ID=FPA_Staticlayer(LDA).ID
+						tempsprites(LDX).X=FPA_Staticlayer(LDA).X
+						tempsprites(LDX).Y=FPA_Staticlayer(LDA).Y
+						tempsprites(LDX).WIDTH=FPA_Staticlayer(LDA).WIDTH
+						tempsprites(LDX).HEIGHT=FPA_Staticlayer(LDA).HEIGHT
+						tempsprites(LDX).MIDDLEWIDTH=FPA_Staticlayer(LDA).MIDDLEWIDTH
+						tempsprites(LDX).MIDDLEHEIGHT=FPA_Staticlayer(LDA).MIDDLEHEIGHT
+						tempsprites(LDX).ANGLE=FPA_Staticlayer(LDA).ANGLE
+					Endif
+				Next LDA
+				
+				Undim FPA_Staticlayer()
+				FPA_staticspritenumbers=FPA_Staticspritenumbers-1
+				Dim FPA_Staticlayer(FPA_staticspritenumbers+1)
+				
+				For LDA=1 to FPA_staticspritenumbers
+						FPA_Staticlayer(LDA).ID=tempsprites(LDA).ID
+						FPA_Staticlayer(LDA).X=tempsprites(LDA).X
+						FPA_Staticlayer(LDA).Y=tempsprites(LDA).Y
+						FPA_Staticlayer(LDA).WIDTH=tempsprites(LDA).WIDTH
+						FPA_Staticlayer(LDA).HEIGHT=tempsprites(LDA).HEIGHT
+						FPA_Staticlayer(LDA).MIDDLEWIDTH=tempsprites(LDA).MIDDLEWIDTH
+						FPA_Staticlayer(LDA).MIDDLEHEIGHT=tempsprites(LDA).MIDDLEHEIGHT
+						FPA_Staticlayer(LDA).ANGLE=tempsprites(LDA).ANGLE
+				Next LDA
+				FPA_EVENT_DELETESPRITE=0
+				Undim tempsprites()
+				selectedsprite=0
+			Endif
+		Endif
+
+		//--deleting sprite from parallax background
+		if fpa_currentlayer=layer_background
+			If param_ID>0 and param_ID<FPA_backgroundspritenumbers+1
+				dim tempsprites(FPA_backgroundspritenumbers-1) as mylayertype
+				LDX=0
+				For LDA=1 to FPA_backgroundspritenumbers
+					If LDA<>param_ID
+						LDX=LDX+1
+						tempsprites(LDX).ID=FPA_backgroundlayer(LDA).ID
+						tempsprites(LDX).X=FPA_backgroundlayer(LDA).X
+						tempsprites(LDX).Y=FPA_backgroundlayer(LDA).Y
+						tempsprites(LDX).WIDTH=FPA_backgroundlayer(LDA).WIDTH
+						tempsprites(LDX).HEIGHT=FPA_backgroundlayer(LDA).HEIGHT
+						tempsprites(LDX).MIDDLEWIDTH=FPA_backgroundlayer(LDA).MIDDLEWIDTH
+						tempsprites(LDX).MIDDLEHEIGHT=FPA_backgroundlayer(LDA).MIDDLEHEIGHT
+						tempsprites(LDX).ANGLE=FPA_backgroundlayer(LDA).ANGLE
+					Endif
+				Next LDA
+				
+				Undim FPA_backgroundlayer()
+				FPA_backgroundspritenumbers=FPA_backgroundspritenumbers-1
+				Dim FPA_backgroundlayer(FPA_backgroundspritenumbers+1)
+				
+				For LDA=1 to FPA_backgroundspritenumbers
+						FPA_backgroundlayer(LDA).ID=tempsprites(LDA).ID
+						FPA_backgroundlayer(LDA).X=tempsprites(LDA).X
+						FPA_backgroundlayer(LDA).Y=tempsprites(LDA).Y
+						FPA_backgroundlayer(LDA).WIDTH=tempsprites(LDA).WIDTH
+						FPA_backgroundlayer(LDA).HEIGHT=tempsprites(LDA).HEIGHT
+						FPA_backgroundlayer(LDA).MIDDLEWIDTH=tempsprites(LDA).MIDDLEWIDTH
+						FPA_backgroundlayer(LDA).MIDDLEHEIGHT=tempsprites(LDA).MIDDLEHEIGHT
+						FPA_backgroundlayer(LDA).ANGLE=tempsprites(LDA).ANGLE
+				Next LDA
+				FPA_EVENT_DELETESPRITE=0
+				Undim tempsprites()
+				selectedsprite=0
+			Endif
+		Endif
+
+		//--deleting sprite from parallax foreground
+		if fpa_currentlayer=layer_foreground
+			If param_ID>0 and param_ID<FPA_foregroundspritenumbers+1
+				dim tempsprites(FPA_foregroundspritenumbers-1) as mylayertype
+				LDX=0
+				For LDA=1 to FPA_foregroundspritenumbers
+					If LDA<>param_ID
+						LDX=LDX+1
+						tempsprites(LDX).ID=FPA_foregroundlayer(LDA).ID
+						tempsprites(LDX).X=FPA_foregroundlayer(LDA).X
+						tempsprites(LDX).Y=FPA_foregroundlayer(LDA).Y
+						tempsprites(LDX).WIDTH=FPA_foregroundlayer(LDA).WIDTH
+						tempsprites(LDX).HEIGHT=FPA_foregroundlayer(LDA).HEIGHT
+						tempsprites(LDX).MIDDLEWIDTH=FPA_foregroundlayer(LDA).MIDDLEWIDTH
+						tempsprites(LDX).MIDDLEHEIGHT=FPA_foregroundlayer(LDA).MIDDLEHEIGHT
+						tempsprites(LDX).ANGLE=FPA_foregroundlayer(LDA).ANGLE
+					Endif
+				Next LDA
+				
+				Undim FPA_foregroundlayer()
+				FPA_foregroundspritenumbers=FPA_foregroundspritenumbers-1
+				Dim FPA_foregroundlayer(FPA_foregroundspritenumbers+1)
+				
+				For LDA=1 to FPA_foregroundspritenumbers
+						FPA_foregroundlayer(LDA).ID=tempsprites(LDA).ID
+						FPA_foregroundlayer(LDA).X=tempsprites(LDA).X
+						FPA_foregroundlayer(LDA).Y=tempsprites(LDA).Y
+						FPA_foregroundlayer(LDA).WIDTH=tempsprites(LDA).WIDTH
+						FPA_foregroundlayer(LDA).HEIGHT=tempsprites(LDA).HEIGHT
+						FPA_foregroundlayer(LDA).MIDDLEWIDTH=tempsprites(LDA).MIDDLEWIDTH
+						FPA_foregroundlayer(LDA).MIDDLEHEIGHT=tempsprites(LDA).MIDDLEHEIGHT
+						FPA_foregroundlayer(LDA).ANGLE=tempsprites(LDA).ANGLE
+				Next LDA
+				FPA_EVENT_DELETESPRITE=0
+				Undim tempsprites()
+				selectedsprite=0
+			Endif
+		Endif
+
+
+		//--deleting sprite from playground
+		if fpa_currentlayer=layer_playground
+			If param_ID>0 and param_ID<FPA_playgroundspritenumbers+1
+				dim tempsprites(FPA_playgroundspritenumbers-1) as mylayertype
+				LDX=0
+				For LDA=1 to FPA_playgroundspritenumbers
+					If LDA<>param_ID
+						LDX=LDX+1
+						tempsprites(LDX).ID=FPA_playgroundlayer(LDA).ID
+						tempsprites(LDX).X=FPA_playgroundlayer(LDA).X
+						tempsprites(LDX).Y=FPA_playgroundlayer(LDA).Y
+						tempsprites(LDX).WIDTH=FPA_playgroundlayer(LDA).WIDTH
+						tempsprites(LDX).HEIGHT=FPA_playgroundlayer(LDA).HEIGHT
+						tempsprites(LDX).MIDDLEWIDTH=FPA_playgroundlayer(LDA).MIDDLEWIDTH
+						tempsprites(LDX).MIDDLEHEIGHT=FPA_playgroundlayer(LDA).MIDDLEHEIGHT
+						tempsprites(LDX).ANGLE=FPA_playgroundlayer(LDA).ANGLE
+					Endif
+				Next LDA
+				
+				Undim FPA_playgroundlayer()
+				FPA_playgroundspritenumbers=FPA_playgroundspritenumbers-1
+				Dim FPA_playgroundlayer(FPA_playgroundspritenumbers+1)
+				
+				For LDA=1 to FPA_playgroundspritenumbers
+						FPA_playgroundlayer(LDA).ID=tempsprites(LDA).ID
+						FPA_playgroundlayer(LDA).X=tempsprites(LDA).X
+						FPA_playgroundlayer(LDA).Y=tempsprites(LDA).Y
+						FPA_playgroundlayer(LDA).WIDTH=tempsprites(LDA).WIDTH
+						FPA_playgroundlayer(LDA).HEIGHT=tempsprites(LDA).HEIGHT
+						FPA_playgroundlayer(LDA).MIDDLEWIDTH=tempsprites(LDA).MIDDLEWIDTH
+						FPA_playgroundlayer(LDA).MIDDLEHEIGHT=tempsprites(LDA).MIDDLEHEIGHT
+						FPA_playgroundlayer(LDA).ANGLE=tempsprites(LDA).ANGLE
+				Next LDA
+				FPA_EVENT_DELETESPRITE=0
+				Undim tempsprites()
+				selectedsprite=0
+			Endif
+		Endif
+
+//--deleting sprite from playground
+		if fpa_currentlayer=layer_playground2
+			If param_ID>0 and param_ID<FPA_playground2spritenumbers+1
+				dim tempsprites(FPA_playground2spritenumbers-1) as mylayertype
+				LDX=0
+				For LDA=1 to FPA_playground2spritenumbers
+					If LDA<>param_ID
+						LDX=LDX+1
+						tempsprites(LDX).ID=FPA_Playgroundlayer2(LDA).ID
+						tempsprites(LDX).X=FPA_playgroundlayer2(LDA).X
+						tempsprites(LDX).Y=FPA_playgroundlayer2(LDA).Y
+						tempsprites(LDX).WIDTH=FPA_playgroundlayer2(LDA).WIDTH
+						tempsprites(LDX).HEIGHT=FPA_playgroundlayer2(LDA).HEIGHT
+						tempsprites(LDX).MIDDLEWIDTH=FPA_playgroundlayer2(LDA).MIDDLEWIDTH
+						tempsprites(LDX).MIDDLEHEIGHT=FPA_playgroundlayer2(LDA).MIDDLEHEIGHT
+						tempsprites(LDX).ANGLE=FPA_playgroundlayer2(LDA).ANGLE
+					Endif
+				Next LDA
+				
+				Undim FPA_playgroundlayer2()
+				FPA_playground2spritenumbers=FPA_playground2spritenumbers-1
+				Dim FPA_playgroundlayer2(FPA_playground2spritenumbers+1)
+				
+				For LDA=1 to FPA_playground2spritenumbers
+						FPA_playgroundlayer2(LDA).ID=tempsprites(LDA).ID
+						FPA_playgroundlayer2(LDA).X=tempsprites(LDA).X
+						FPA_playgroundlayer2(LDA).Y=tempsprites(LDA).Y
+						FPA_playgroundlayer2(LDA).WIDTH=tempsprites(LDA).WIDTH
+						FPA_playgroundlayer2(LDA).HEIGHT=tempsprites(LDA).HEIGHT
+						FPA_playgroundlayer2(LDA).MIDDLEWIDTH=tempsprites(LDA).MIDDLEWIDTH
+						FPA_playgroundlayer2(LDA).MIDDLEHEIGHT=tempsprites(LDA).MIDDLEHEIGHT
+						FPA_playgroundlayer2(LDA).ANGLE=tempsprites(LDA).ANGLE
+				Next LDA
+				FPA_EVENT_DELETESPRITE=0
+				Undim tempsprites()
+				selectedsprite=0
+			Endif
+		Endif
+
+
+
+	Endif
+Endfunction
 
 Function FPA_DRAWSTATICLAYER()
 //***************************************************************************************
@@ -692,6 +901,8 @@ Function FPA_AddSpriteToCurrentLayer()
 		if fpa_currentlayer=layer_foreground
 			FPA_AddspriteToLayer(FPA_currentlayer,FPA_SelectedSpriteImage,(floor(-1*FPA_worldoffsetx*foreground_parallax_speed)+mousex()+FPA_Spriteimage(FPA_SELECTEDSPRITEIMAGE).halfwidth/2),(floor(-1*FPA_worldoffsety*foreground_parallax_speed))+mousey()+FPA_Spriteimage(FPA_SELECTEDSPRITEIMAGE).halfheight/2)
 		Endif
+	Else
+		FPA_WARNNOSELECTEDSPRITE()
 	Endif
 Endfunction
 
